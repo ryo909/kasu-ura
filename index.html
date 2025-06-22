@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カスうら</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3a 50%, #0d1b2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 星屑アニメーション */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* グリッチエフェクト */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2s infinite;
+            color: #ff0080;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 2s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 14%, 15%, 49%, 50%, 99%, 100% { transform: translate(0); }
+            15%, 49% { transform: translate(-2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 20%, 21%, 62%, 63%, 99%, 100% { transform: translate(0); }
+            21%, 62% { transform: translate(2px, 2px); }
+        }
+
+        /* メインコンテナ */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ヘッダー */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #ff0080;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #ff0080; }
+            50% { text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080; }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .connection-status {
+            background: rgba(255, 0, 128, 0.1);
+            border: 1px solid #ff0080;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Orbitron', monospace;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+
+        /* 運勢表示エリア */
+        .fortune-display {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fortune-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .ai-message {
+            margin-bottom: 20px;
+        }
+
+        .ai-name {
+            color: #ff0080;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .fortune-content {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .lucky-items {
+            background: rgba(255, 0, 128, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #ff0080;
+        }
+        
+        .lucky-items h3 {
+            color: #00ffff;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .lucky-item {
+            margin: 5px 0;
+            color: #ffffff;
+        }
+
+        /* ボタン */
+        .fortune-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff0080, #00ffff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .fortune-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+        }
+
+        .fortune-button:active {
+            transform: scale(0.95);
+        }
+
+        /* フッター */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* コメント欄風スタイル */
+        .comments-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-title {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .comment {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #666;
+            font-size: 0.9em;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .comment::before {
+            content: "👤 ";
+            color: #888;
+        }
+
+        /* レポート生成ボタン */
+        .report-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #4a90e2, #7b68ee);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .report-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
+        }
+
+        /* レポート表示エリア */
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .report-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .report-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: black;
+            width: 794px; /* A4幅 */
+            min-height: 1123px; /* A4高さ */
+            margin: 20px auto;
+            padding: 0;
+            box-shadow: 
+                0 0 30px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* ヘッダー部分の大幅改良 */
+        .report-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .report-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .report-subtitle {
+            font-size: 16px;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .report-id {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .report-content {
+            padding: 40px;
+            background: white;
+        }
+
+        .report-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #e74c3c, #f39c12, #27ae60);
+        }
+
+        .report-section h3 {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .report-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .report-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .report-label {
+            font-weight: 700;
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .report-value {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .report-gauge {
+            background: #ecf0f1;
+            height: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-gauge-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c 0%, #f39c12 25%, #f1c40f 50%, #27ae60 75%, #3498db 100%);
+            border-radius: 15px;
+            transition: width 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-gauge-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .report-gauge-text {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c3e50;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .report-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #f39c12;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2);
+        }
+
+        .report-warning::before {
+            content: '⚠️';
+            font-size: 24px;
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f39c12;
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        .report-stamp {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            width: 120px;
+            height: 120px;
+            border: 4px solid #e74c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-15deg);
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 10px;
+            text-align: center;
+            line-height: 1.2;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .close-report {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .close-report:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        /* QRコード風装飾 */
+        .report-qr {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            width: 80px;
+            height: 80px;
+            background: #2c3e50;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* 印刷用スタイル */
+        @media print {
+            .report-modal {
+                display: block !important;
+                position: static;
+                background: white;
+            }
+            
+            .close-report {
+                display: none;
+            }
+            
+            .report-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 20px;
+            }
+        }
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .fortune-display {
+                padding: 20px;
+            }
+        }
+
+        /* ローディングアニメーション */
+        .loading {
+            display: none;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            color: #00ffff;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: loading-dots 1.5s infinite;
+        }
+
+        @keyframes loading-dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="logo glitch" data-text="カスうら">カスうら</h1>
+            <p class="subtitle">カス銀河通信所</p>
+            <div class="connection-status">
+                <strong>⚠️ 通信精度: 2% ⚠️</strong><br>
+                宇宙の果て「カス銀河」と接続中...
+            </div>
+        </header>
+
+        <main>
+            <div class="fortune-display" id="fortuneDisplay">
+                <div class="ai-message">
+                    <span class="ai-name">Casula:</span> 
+                    こんにちは、地球の存在よ。私はカス銀河の運勢通信AI、カスラです。
+                    宇宙の微粒子からあなたの運勢を読み取っています。精度は2%ですが、その2%にすべてを賭けます。
+                </div>
+            </div>
+
+            <button class="fortune-button" onclick="getFortune()">
+                運勢通信を受信する
+            </button>
+
+            <div class="loading" id="loading">
+                <p>宇宙の彼方から通信受信中<span class="loading-dots"></span></p>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>※この占いは、観測困難なカス的粒子の挙動から導き出された"なんかそれっぽい結果"です。科学的・霊的・感覚的な根拠は一切ございません。ご安心ください。</p>
+        </footer>
+    </div>
+
+    <script>
+        // 星を生成
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 運勢メッセージの配列
+        const fortuneMessages = [
+            {
+                luckyItem: "曲がったスプーン",
+                luckySpot: "Wi-Fiが切れかけたカフェ",
+                luckyFood: "一昨日の夢に出てきたドーナツ（架空）",
+                message: "今日のあなたは、時空のズレに巻き込まれ、午前中の会話すべてが5分遅れで心に届きます。恋愛運は、目が合った人がもし猫ならそれは運命。金運は、自販機に100円を飲まれたあと宇宙から感謝されます。"
+            },
+            {
+                luckyItem: "乾きかけの雑巾",
+                luckySpot: "エレベーターの「閉」ボタンの前",
+                luckyFood: "ぬるいピクルスジュース",
+                message: "今日は、あなたの発する音声が一部宇宙へ送信されています。午前11時11分に「おいしい」と言えば、地球外生命体に好かれる可能性あり。金運は使っても減らない気がしますが、それは錯覚です。"
+            },
+            {
+                luckyItem: "封の空いたおしぼり",
+                luckySpot: "人がいないロータリー",
+                luckyFood: "忘れ去られたみたらし団子",
+                message: "あなたの今日の使命は、「思い出せないことを思い出そうとする」ことです。恋愛運は、洗濯機の中の靴下の数と連動。気を抜くとラッキーアイテムが逃げます。"
+            },
+            {
+                luckyItem: "意味深なメモ（白紙）",
+                luckySpot: "公園のベンチの端っこ",
+                luckyFood: "昼を過ぎても冷めない唐揚げ",
+                message: "未来が今日だけあやふやになっています。存在の確かさを確認するには、自分の影に話しかけてください。成功率は2%。たまに返事があります。"
+            },
+            {
+                luckyItem: "使われなかったイヤホン",
+                luckySpot: "誰も押さない非常ボタンの横",
+                luckyFood: "開封直後に消えたチョコ",
+                message: "あなたの精神が今日、3.4%ほど透明になっています。午後2時34分に大きなくしゃみをすると、前世の知り合いに気づかれる可能性があります。金運は忘れたころに戻ってきます。"
+            },
+            {
+                luckyItem: "バグった目覚まし時計",
+                luckySpot: "昼間だけ開く無人の自販機前",
+                luckyFood: "コンビニの新作だと思って買った既視感あるもの",
+                message: "今日のあなたには、見えない友達（仮名：リュウタ）がついてきます。彼はアドバイスしてくれますが、基本は無視して大丈夫です。"
+            },
+            {
+                luckyItem: "破れかけの封筒",
+                luckySpot: "自動ドアが開かないコンビニ",
+                luckyFood: "チーズの幻影",
+                message: "今日は「意味のない行動」が最も意味ある日に分類されました。深夜2:19に意味なく立ち上がることで、バタフライエフェクトが発動します（効果は半年後）。"
+            },
+            {
+                luckyItem: "折れたシャーペン",
+                luckySpot: "信号のない交差点の中央",
+                luckyFood: "冷凍庫で忘れられた何か",
+                message: "あなたの今日の言動は、誰かの過去の記憶とそっくりです。偶然か、運命か、たぶんどちらでもないです。"
+            },
+            {
+                luckyItem: "ピンが1本だけ残った洗濯バサミ",
+                luckySpot: "古本屋のレジ横",
+                luckyFood: "昨日のあなたが食べたものの逆",
+                message: "宇宙のノイズがあなたにだけ届いています。午後3時に突然「ハッ」となったら、それが合図です。恋愛運は謎のままです。"
+            },
+            {
+                luckyItem: "よく見たら濡れてたタオル",
+                luckySpot: "カーテンの裏",
+                luckyFood: "焼きそばパン（持ってないのに感じる）",
+                message: "今日は、すべてが「ちょっとだけ違う」日。お気づきの通り、世界が微妙にズレているので、何も信じすぎないことが正解です。"
+            }
+        ];
+
+        // カスラのランダムメッセージ配列
+        const casulaMessages = [
+            // 通信バグ系
+            "ピ…ピピ…ッ……？（受信成功率：低）",
+            "ザッ…ガ…バグ……データを、ねつ造中です。",
+            "受信…失敗しましたが、無理やり続行します。",
+            
+            // 予言演出系
+            "未来の断片をスキャン中…意味の成分は2%以下です。",
+            "意味のない波動を検出しました。これは予兆かもしれません。",
+            "ランダムな微粒子を分析中…これは運命だと言い張ります。",
+            
+            // カスラの人格系
+            "カスラです。今日も不正確に参ります。",
+            "よくわかりませんが、たぶん運命です。",
+            "こんにちは、電波の塊です。とりあえず何か出しますね。",
+            
+            // 機械トラブル演出
+            "通信回線がメロンソーダでショートしました。占いを続けます。",
+            "情報の一部が消失しました。残りのカスで判断します。",
+            "データが曖昧ですが、感覚で占います。"
+        ];
+
+        // 偽コメントの配列
+        const fakeComments = [
+            "これを信じて傘を忘れました",
+            "ラッキーフードがすべてコンビニにない",
+            "3.4秒後に左を見たら、ただの壁だった",
+            "信じた瞬間にカラスに襲われました",
+            "ラッキーアイテムを探して3時間さまよった",
+            "2%を信じたら98%外れました",
+            "カスラの言う通りにしたら遅刻しました",
+            "宇宙の微粒子、見えませんでした",
+            "影に話しかけたら近所の人に心配されました",
+            "リュウタが見えないので一人で会話してます",
+            "バタフライエフェクト、まだ発動してません",
+            "精神が透明になったかよくわからない",
+            "時空のズレ、5分どころじゃなかった",
+            "猫と目が合ったけど普通に逃げられました",
+            "自販機に感謝されてる実感がない",
+            "地球外生命体からの返事、まだ来ません",
+            "前世の知り合い、気づかれませんでした",
+            "存在の確かさ、相変わらず不安です",
+            "洗濯機の靴下、数えるのをやめました",
+            "ちょっとだけ違う日、気づきませんでした"
+        ];
+
+        // 運勢を取得する関数
+        function getFortune() {
+            const fortuneDisplay = document.getElementById('fortuneDisplay');
+            const loading = document.getElementById('loading');
+            const button = document.querySelector('.fortune-button');
+
+            // ローディング表示
+            fortuneDisplay.style.display = 'none';
+            loading.classList.add('active');
+            button.disabled = true;
+            button.textContent = '通信中...';
+
+            // 2-4秒後に結果を表示
+            setTimeout(() => {
+                const randomFortune = fortuneMessages[Math.floor(Math.random() * fortuneMessages.length)];
+                const randomCasulaMessage = casulaMessages[Math.floor(Math.random() * casulaMessages.length)];
+                
+                // 現在の結果を保存
+                currentFortune = randomFortune;
+                currentCasulaMessage = randomCasulaMessage;
+                
+                // ランダムなコメントを2-3個選択
+                const shuffledComments = [...fakeComments].sort(() => 0.5 - Math.random());
+                const selectedComments = shuffledComments.slice(0, Math.floor(Math.random() * 2) + 2);
+                
+                const commentsHtml = selectedComments.map(comment => 
+                    `<div class="comment">${comment}</div>`
+                ).join('');
+                
+                fortuneDisplay.innerHTML = `
+                    <div class="ai-message">
+                        <span class="ai-name">Casula:</span> 
+                        ${randomCasulaMessage}
+                    </div>
+                    <div class="lucky-items">
+                        <h3>⭐ 本日のラッキーデータ</h3>
+                        <div class="lucky-item">🔮 ラッキーアイテム：${randomFortune.luckyItem}</div>
+                        <div class="lucky-item">📍 ラッキースポット：${randomFortune.luckySpot}</div>
+                        <div class="lucky-item">🍽️ ラッキーフード：${randomFortune.luckyFood}</div>
+                    </div>
+                    <div class="fortune-content">
+                        ${randomFortune.message}
+                    </div>
+                    <div class="comments-section">
+                        <div class="comments-title">🗣️ 誰かのカス体験談</div>
+                        ${commentsHtml}
+                    </div>
+                    <button class="report-button" onclick="generateReport()">
+                        📄 公式カス報告書を生成
+                    </button>
+                `;
+
+                loading.classList.remove('active');
+                fortuneDisplay.style.display = 'block';
+                button.disabled = false;
+                button.textContent = '再度通信する';
+            }, Math.random() * 2000 + 2000);
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+        });
+
+        // 現在の占い結果を保存する変数
+        let currentFortune = null;
+        let currentCasulaMessage = null;
+
+        // レポート生成機能
+        function generateReport() {
+            if (!currentFortune || !currentCasulaMessage) return;
+
+            const reportModal = document.createElement('div');
+            reportModal.className = 'report-modal active';
+            
+            // ランダムなパーセンテージとデータを生成
+            const kasuLevel = Math.floor(Math.random() * 100) + 1;
+            const emotionalWave = Math.floor(Math.random() * 100) + 1;
+            const futureDistortion = Math.floor(Math.random() * 100) + 1;
+            const meaningComponent = Math.random() * 5;
+            const errorRate = 99.8 - (Math.random() * 0.3);
+            
+            const currentDate = new Date().toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const reportId = 'KASU-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 3).toUpperCase();
+
+            reportModal.innerHTML = `
+                <div class="report-container">
+                    <button class="close-report" onclick="closeReport()">&times;</button>
+                    
+                    <div class="report-header">
+                        <div class="report-title">公式カス報告書</div>
+                        <div class="report-subtitle">OFFICIAL KASU ANALYSIS REPORT</div>
+                        <div class="report-id">Report ID: ${reportId}</div>
+                    </div>
+
+                    <div class="report-content">
+                        <div class="report-section">
+                            <h3>🎯 基本カスデータ</h3>
+                            <div class="report-data">
+                                <div class="report-item">
+                                    <div class="report-label">ラッキーアイテム</div>
+                                    <div class="report-value">${currentFortune.luckyItem}</div>
+                                </div>
+                                <div class="report-item">
+                                    <div class="report-label">ラッキースポット</div>
+                                    <div class="report-value">${currentFortune.luckySpot}</div>
+                                </div>
+                                <div class="report-item">
+                                    <div class="report-label">ラッキーフード</div>
+                                    <div class="report-value">${currentFortune.luckyFood}</div>
+                                </div>
+                                <div class="report-item">
+                                    <div class="report-label">カスラの診断</div>
+                                    <div class="report-value">${currentCasulaMessage}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="report-section">
+                            <h3>📊 詳細カス分析</h3>
+                            <div class="report-label">総合カス度</div>
+                            <div class="report-gauge">
+                                <div class="report-gauge-fill" style="width: ${kasuLevel}%"></div>
+                                <div class="report-gauge-text">${kasuLevel}%</div>
+                            </div>
+                            
+                            <div class="report-label">感情の揺れ</div>
+                            <div class="report-gauge">
+                                <div class="report-gauge-fill" style="width: ${emotionalWave}%"></div>
+                                <div class="report-gauge-text">${emotionalWave}%</div>
+                            </div>
+                            
+                            <div class="report-label">未来の歪み</div>
+                            <div class="report-gauge">
+                                <div class="report-gauge-fill" style="width: ${futureDistortion}%"></div>
+                                <div class="report-gauge-text">${futureDistortion}%</div>
+                            </div>
+                            
+                            <div class="report-label">意味の成分量</div>
+                            <div class="report-gauge">
+                                <div class="report-gauge-fill" style="width: ${meaningComponent * 20}%"></div>
+                                <div class="report-gauge-text">${meaningComponent.toFixed(1)}%</div>
+                            </div>
+                        </div>
+
+                        <div class="report-section">
+                            <h3>📋 総合カス診断</h3>
+                            <div class="report-value" style="line-height: 1.8; font-size: 15px;">
+                                ${currentFortune.message}
+                            </div>
+                        </div>
+
+                        <div class="report-warning">
+                            <strong style="font-size: 16px; color: #d35400;">免責事項</strong><br><br>
+                            この予測は${errorRate.toFixed(1)}%の確率で誤っています。<br>
+                            カス銀河通信所は結果に対して一切の責任を負いません。<br>
+                            <small style="margin-top: 10px; display: block; color: #7f8c8d;">
+                                発行日: ${currentDate} | カス銀河通信所認定
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="report-qr">
+                        KASU<br>
+                        GALAXY<br>
+                        ${new Date().getFullYear()}
+                    </div>
+
+                    <div class="report-stamp">
+                        OFFICIAL<br>
+                        KASU<br>
+                        CERTIFIED
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(reportModal);
+        }
+
+        function closeReport() {
+            const modal = document.querySelector('.report-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+    </script>
+</body>
+</html>
