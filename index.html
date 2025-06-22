@@ -197,41 +197,39 @@
             color: #ffffff;
         }
 
-        /* ボタン */
-        .fortune-button {
-            display: block;
-            width: 100%;
-            max-width: 300px;
-            margin: 30px auto;
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #ff0080, #00ffff);
-            color: white;
-            border: none;
-            border-radius: 25px;
+        /* バッジセクション */
+        .badge-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .badge-title {
+            color: #ffd700;
             font-family: 'Orbitron', monospace;
             font-size: 1.1em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .badge-item {
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 25px;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
+            display: inline-block;
+            margin: 5px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            animation: badgeGlow 2s infinite alternate;
         }
 
-        .fortune-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
-        }
-
-        .fortune-button:active {
-            transform: scale(0.95);
-        }
-
-        /* フッター */
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #888;
-            font-size: 0.9em;
+        @keyframes badgeGlow {
+            0% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
+            100% { box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6); }
         }
 
         /* コメント欄風スタイル */
@@ -290,7 +288,84 @@
             box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
         }
 
-        /* レポート表示エリア */
+        /* ボタン */
+        .fortune-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff0080, #00ffff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .fortune-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+        }
+
+        .fortune-button:active {
+            transform: scale(0.95);
+        }
+
+        /* フッター */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* ローディングアニメーション */
+        .loading {
+            display: none;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            color: #00ffff;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: loading-dots 1.5s infinite;
+        }
+
+        @keyframes loading-dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .fortune-display {
+                padding: 20px;
+            }
+        }
+
+        /* レポートモーダル */
         .report-modal {
             display: none;
             position: fixed;
@@ -314,24 +389,37 @@
         .report-container {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             color: black;
-            width: 794px; /* A4幅 */
-            min-height: 1123px; /* A4高さ */
+            width: 794px;
+            min-height: 1123px;
             margin: 20px auto;
             padding: 0;
             box-shadow: 
-                0 0 30px rgba(0, 0, 0, 0.3),
+                0 0 50px rgba(0, 0, 0, 0.4),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.8);
             font-family: 'M PLUS Rounded 1c', sans-serif;
             position: relative;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        /* ヘッダー部分の大幅改良 */
+        .report-container::before {
+            content: 'KASU GALAXY';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(0, 0, 0, 0.03);
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            z-index: 1;
+            pointer-events: none;
+        }
+
         .report-header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             color: white;
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -344,61 +432,71 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 0, 0.1) 0%, transparent 50%);
+            animation: float 15s ease-in-out infinite;
         }
 
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, -20px) rotate(1deg); }
+            66% { transform: translate(20px, -10px) rotate(-1deg); }
         }
 
         .report-title {
             font-family: 'Orbitron', monospace;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 900;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.5),
+                2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
             position: relative;
             z-index: 2;
         }
 
         .report-subtitle {
-            font-size: 16px;
+            font-size: 18px;
             color: #bdc3c7;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-weight: 300;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             position: relative;
             z-index: 2;
         }
 
         .report-id {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 20px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));
+            padding: 12px 25px;
+            border-radius: 25px;
             font-family: 'Orbitron', monospace;
-            font-size: 12px;
+            font-size: 13px;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .report-content {
+            padding: 50px;
+            background: white;
             position: relative;
             z-index: 2;
         }
 
-        .report-content {
-            padding: 40px;
-            background: white;
-        }
-
         .report-section {
-            margin: 30px 0;
-            padding: 25px;
-            background: white;
+            margin: 35px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border: none;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
+                0 8px 25px rgba(0, 0, 0, 0.1),
                 0 0 0 1px rgba(0, 0, 0, 0.05);
             position: relative;
             overflow: hidden;
@@ -410,8 +508,8 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #3498db, #e74c3c, #f39c12, #27ae60);
+            height: 6px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #27ae60, #3498db, #9b59b6);
         }
 
         .report-section h3 {
@@ -429,30 +527,46 @@
         .report-data {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
+            gap: 25px;
+            margin: 25px 0;
         }
 
         .report-item {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .report-item:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
         }
 
         .report-label {
             font-weight: 700;
-            font-size: 11px;
+            font-size: 12px;
             color: #7f8c8d;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .report-label::before {
+            content: '◆';
+            color: #3498db;
+            font-size: 8px;
         }
 
         .report-value {
@@ -463,22 +577,32 @@
         }
 
         .report-gauge {
-            background: #ecf0f1;
-            height: 25px;
-            border-radius: 15px;
-            margin: 15px 0;
+            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+            height: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                inset 0 3px 6px rgba(0, 0, 0, 0.1),
+                0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .report-gauge-fill {
             height: 100%;
-            background: linear-gradient(90deg, #e74c3c 0%, #f39c12 25%, #f1c40f 50%, #27ae60 75%, #3498db 100%);
-            border-radius: 15px;
-            transition: width 0.8s ease;
+            background: linear-gradient(90deg, 
+                #e74c3c 0%, 
+                #f39c12 20%, 
+                #f1c40f 40%, 
+                #27ae60 60%, 
+                #3498db 80%, 
+                #9b59b6 100%);
+            border-radius: 20px;
+            transition: width 1s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
 
         .report-gauge-fill::after {
@@ -488,11 +612,14 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: shine 2s infinite;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.6), 
+                transparent);
+            animation: shimmer 3s infinite;
         }
 
-        @keyframes shine {
+        @keyframes shimmer {
             0% { left: -100%; }
             100% { left: 100%; }
         }
@@ -508,6 +635,82 @@
             background: rgba(255, 255, 255, 0.9);
             padding: 2px 8px;
             border-radius: 10px;
+        }
+
+        .report-wave-section {
+            background: linear-gradient(135deg, #001122 0%, #002244 100%);
+            color: #00ffff;
+            padding: 30px;
+            border-radius: 16px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-wave-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .report-wave-chart {
+            position: relative;
+            height: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            z-index: 2;
+        }
+
+        .wave-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .wave-annotation {
+            position: absolute;
+            background: rgba(255, 255, 0, 0.9);
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        .wave-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #00ffff;
+            margin-top: 10px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .wave-y-axis {
+            position: absolute;
+            left: -30px;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
         }
 
         .report-warning {
@@ -580,7 +783,6 @@
             transform: scale(1.1);
         }
 
-        /* QRコード風装飾 */
         .report-qr {
             position: absolute;
             bottom: 40px;
@@ -598,7 +800,6 @@
             font-family: 'Orbitron', monospace;
         }
 
-        /* 印刷用スタイル */
         @media print {
             .report-modal {
                 display: block !important;
@@ -615,44 +816,6 @@
                 margin: 0;
                 padding: 20px;
             }
-        }
-        @media (max-width: 768px) {
-            .logo {
-                font-size: 2em;
-            }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            .fortune-display {
-                padding: 20px;
-            }
-        }
-
-        /* ローディングアニメーション */
-        .loading {
-            display: none;
-            text-align: center;
-            font-family: 'Orbitron', monospace;
-            color: #00ffff;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .loading-dots::after {
-            content: '';
-            animation: loading-dots 1.5s infinite;
-        }
-
-        @keyframes loading-dots {
-            0% { content: ''; }
-            25% { content: '.'; }
-            50% { content: '..'; }
-            75% { content: '...'; }
-            100% { content: ''; }
         }
     </style>
 </head>
@@ -772,6 +935,30 @@
             }
         ];
 
+        // バッジの配列
+        const badges = [
+            "🍃 見えざる昆布バッジ",
+            "👂 ラッキー足音発見者",
+            "🥉 運命スルー大賞（銅）",
+            "🌀 時空の迷子バッジ",
+            "🔍 意味探しマスター",
+            "🎭 現実逃避エキスパート",
+            "⚡ 電波受信体質認定",
+            "🎪 カオス耐性バッジ",
+            "🌙 深夜の哲学者",
+            "🎲 運任せチャンピオン",
+            "🔮 予言無視の達人",
+            "🎯 的外れ名人",
+            "🌊 波動感知能力者",
+            "🎈 ふわふわ思考バッジ",
+            "⭐ 星屑コレクター",
+            "🎭 意味不明演技賞",
+            "🌀 混乱製造機バッジ",
+            "🎪 日常脱出アーティスト",
+            "🔄 ループ思考マスター",
+            "🎨 抽象化の天才"
+        ];
+
         // カスラのランダムメッセージ配列
         const casulaMessages = [
             // 通信バグ系
@@ -819,6 +1006,59 @@
             "ちょっとだけ違う日、気づきませんでした"
         ];
 
+        // 現在の占い結果を保存する変数
+        let currentFortune = null;
+        let currentCasulaMessage = null;
+
+        // 波形グラフを生成する関数
+        function generateWaveChart() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+            
+            // 背景をクリア
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 波形ラインを描画
+            ctx.strokeStyle = '#00ffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            let prevY = Math.random() * 150 + 25;
+            ctx.moveTo(0, prevY);
+            
+            for (let x = 0; x <= canvas.width; x += 10) {
+                // ランダムな変動を加える
+                const variation = (Math.random() - 0.5) * 60;
+                const newY = Math.max(25, Math.min(175, prevY + variation));
+                ctx.lineTo(x, newY);
+                prevY = newY;
+            }
+            
+            ctx.stroke();
+            
+            return canvas.toDataURL();
+        }
+
+        // ランダムな波形注釈を生成
+        function generateWaveAnnotations() {
+            const annotations = [
+                { text: "意味のピーク", left: "25%", top: "20%" },
+                { text: "混乱地帯", left: "60%", top: "70%" },
+                { text: "誤差です", left: "80%", top: "30%" },
+                { text: "ここが山場", left: "40%", top: "50%" },
+                { text: "データ欠損", left: "15%", top: "80%" },
+                { text: "ノイズ発生", left: "75%", top: "15%" }
+            ];
+            
+            // ランダムに2-3個選択
+            const selected = annotations.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 2);
+            return selected.map(ann => 
+                `<div class="wave-annotation" style="left: ${ann.left}; top: ${ann.top};">${ann.text}</div>`
+            ).join('');
+        }
+
         // 運勢を取得する関数
         function getFortune() {
             const fortuneDisplay = document.getElementById('fortuneDisplay');
@@ -844,6 +1084,9 @@
                 const shuffledComments = [...fakeComments].sort(() => 0.5 - Math.random());
                 const selectedComments = shuffledComments.slice(0, Math.floor(Math.random() * 2) + 2);
                 
+                // ランダムなバッジを1個選択
+                const randomBadge = badges[Math.floor(Math.random() * badges.length)];
+                
                 const commentsHtml = selectedComments.map(comment => 
                     `<div class="comment">${comment}</div>`
                 ).join('');
@@ -862,6 +1105,13 @@
                     <div class="fortune-content">
                         ${randomFortune.message}
                     </div>
+                    <div class="badge-section">
+                        <div class="badge-title">🏆 本日の記念バッジ獲得</div>
+                        <div class="badge-item">${randomBadge}</div>
+                        <div style="margin-top: 10px; color: #888; font-size: 0.9em;">
+                            ※バッジに意味はありません
+                        </div>
+                    </div>
                     <div class="comments-section">
                         <div class="comments-title">🗣️ 誰かのカス体験談</div>
                         ${commentsHtml}
@@ -878,15 +1128,6 @@
             }, Math.random() * 2000 + 2000);
         }
 
-        // 初期化
-        document.addEventListener('DOMContentLoaded', function() {
-            createStars();
-        });
-
-        // 現在の占い結果を保存する変数
-        let currentFortune = null;
-        let currentCasulaMessage = null;
-
         // レポート生成機能
         function generateReport() {
             if (!currentFortune || !currentCasulaMessage) return;
@@ -900,6 +1141,10 @@
             const futureDistortion = Math.floor(Math.random() * 100) + 1;
             const meaningComponent = Math.random() * 5;
             const errorRate = 99.8 - (Math.random() * 0.3);
+            
+            // 波形グラフのデータとアノテーション生成
+            const waveImageData = generateWaveChart();
+            const waveAnnotations = generateWaveAnnotations();
             
             const currentDate = new Date().toLocaleDateString('ja-JP', {
                 year: 'numeric',
@@ -939,6 +1184,33 @@
                                     <div class="report-label">カスラの診断</div>
                                     <div class="report-value">${currentCasulaMessage}</div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="report-wave-section">
+                            <div class="report-wave-title">📊 運勢振動波形解析</div>
+                            <div class="report-wave-chart" style="position: relative;">
+                                <div class="wave-y-axis">
+                                    <div>100%</div>
+                                    <div>75%</div>
+                                    <div>50%</div>
+                                    <div>25%</div>
+                                    <div>0%</div>
+                                </div>
+                                <div class="wave-grid"></div>
+                                <img src="${waveImageData}" style="width: 100%; height: 100%; object-fit: cover;">
+                                ${waveAnnotations}
+                            </div>
+                            <div class="wave-labels">
+                                <span>6:00</span>
+                                <span>9:00</span>
+                                <span>12:00</span>
+                                <span>15:00</span>
+                                <span>18:00</span>
+                                <span>21:00</span>
+                            </div>
+                            <div style="text-align: center; margin-top: 15px; color: #00ffff; font-size: 12px; font-family: 'Orbitron', monospace;">
+                                Y軸: 意味度（％） / X軸: 時刻 | 精度: 2.0% ± 98.0%
                             </div>
                         </div>
 
@@ -1009,6 +1281,11 @@
                 modal.remove();
             }
         }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+        });
     </script>
 </body>
 </html>
