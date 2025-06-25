@@ -330,6 +330,38 @@
             border-left: 4px solid #ff0080;
         }
 
+        /* コメント欄風スタイル */
+        .comments-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-title {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .comment {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #666;
+            font-size: 0.9em;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .comment::before {
+            content: "👤 ";
+            color: #888;
+        }
+
         /* SNSシェアセクション */
         .share-section {
             margin-top: 30px;
@@ -518,6 +550,12 @@
                 <div class="answer-content" id="answerContent">
                     <!-- 回答がここに表示される -->
                 </div>
+                <div class="comments-section">
+                    <div class="comments-title">💬 なんか共感してる人の声</div>
+                    <div id="randomComments">
+                        <!-- ランダムコメントがここに表示される -->
+                    </div>
+                </div>
                 <div class="share-section">
                     <div class="share-title">📢 みんなにもこのカス見せる</div>
                     <button class="share-button" onclick="shareToTwitter()">
@@ -653,6 +691,7 @@
             var answerArea = document.getElementById('answerArea');
             var answerContent = document.getElementById('answerContent');
             var shareStats = document.getElementById('shareStats');
+            var randomComments = document.getElementById('randomComments');
             
             // カスラの回答配列
             var casulaAnswers = [
@@ -667,16 +706,53 @@
                 "なるほど。なるほど？　なるほど。カスラは3回なるほどと言いましたので、それが答えです。",
                 "ご質問は完全に理解しました（※当社比）よって、曖昧な肯定をお返しします。「それもまた、あり」"
             ];
+
+            // 共感コメント配列
+            var empathyComments = [
+                "あ〜、これは昨日うちの観葉植物も言ってた",
+                "こういうことって、冷蔵庫の奥でよく起きますよね",
+                "なんかわかる。今朝の味噌汁もそんな味だった",
+                "うちの猫も昨日こんな顔してた。つまりそういうこと",
+                "こういう日は、なぜかトイレのドアが重いんだよな〜",
+                "私も昔、似たようなことを夢の中のパン屋で言われました",
+                "わかる。っていうか、これはだいたい月のせい",
+                "昨日のWi-Fiも同じ反応してた。やっぱ電波って繋がってる",
+                "あ、それ、今朝流れてきた広告にも書いてあった",
+                "わかる。カーテンの揺れ方がそれっぽかったもん",
+                "あー、それ、うちの洗濯機も回りながらつぶやいてた",
+                "なんとなくわかる。夕方の風が同じ匂いしてたもん",
+                "これ読んでたら、目薬さすタイミング忘れた。つまり当たってる",
+                "今朝のくしゃみ、これの予告だったかも",
+                "それ、昔買ったカレンダーにも書いてあった気がする。たぶん裏面",
+                "言葉じゃない\"もやもや\"って、だいたい当たってるんだよね",
+                "こういう話、前にトースターから聞いた",
+                "昨日の夜、急にカーテンが動いた理由がこれでわかった",
+                "実家の仏壇もたぶん同意してる気がする",
+                "これ、昔の自分なら信じてなかった。でも今は、冷蔵庫が教えてくれる"
+            ];
             
             // ランダムな回答を選択
             var randomAnswer = casulaAnswers[Math.floor(Math.random() * casulaAnswers.length)];
             currentAnswer = randomAnswer;
+            
+            // ランダムなコメントを2-3個選択
+            var shuffledComments = empathyComments.sort(function() {return 0.5 - Math.random();});
+            var selectedComments = shuffledComments.slice(0, Math.floor(Math.random() * 2) + 2);
+            
+            // コメントHTMLを生成
+            var commentsHtml = '';
+            for (var i = 0; i < selectedComments.length; i++) {
+                commentsHtml += '<div class="comment">' + selectedComments[i] + '</div>';
+            }
             
             // ローディング非表示
             loading.classList.remove('active');
             
             // 回答を表示
             answerContent.textContent = randomAnswer;
+            
+            // コメントを表示
+            randomComments.innerHTML = commentsHtml;
             
             // シェア統計を初期化
             updateShareStats();
