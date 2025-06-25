@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👁 カスラにきいてみた</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3a 50%, #0d1b2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 星屑アニメーション */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* メインコンテナ */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ヘッダー */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #ff0080;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #ff0080; }
+            50% { text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080; }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            font-size: 0.95em;
+            color: #cccccc;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* 質問フォーム */
+        .question-form {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .form-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            resize: none;
+            min-height: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .question-input::placeholder {
+            color: #888;
+        }
+
+        .char-counter {
+            position: absolute;
+            bottom: -25px;
+            right: 10px;
+            font-size: 0.8em;
+            color: #888;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .char-counter.warning {
+            color: #ffa500;
+        }
+
+        .char-counter.danger {
+            color: #ff4757;
+        }
+
+        /* 送信ボタン */
+        .submit-button {
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto 0;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff0080, #00ffff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ローディングアニメーション */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            font-family: 'Orbitron', monospace;
+            color: #00ffff;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .loading-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .wave-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        .wave-dot:nth-child(2) { animation-delay: 0.2s; }
+        .wave-dot:nth-child(3) { animation-delay: 0.4s; }
+        .wave-dot:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes wave {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .loading-messages {
+            font-size: 0.9em;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        /* 回答エリア */
+        .answer-area {
+            display: none;
+            background: rgba(255, 0, 128, 0.05);
+            border: 2px solid #ff0080;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-area.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .answer-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 128, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        .answer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .casula-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+
+        .casula-name {
+            color: #ff0080;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .answer-content {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #ff0080;
+        }
+
+        .question-again {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .question-again-button {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .question-again-button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* フッター */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* ランダムボタンテキスト用のスタイル */
+        .button-text-change {
+            animation: buttonTextFade 0.3s ease-in-out;
+        }
+
+        @keyframes buttonTextFade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .question-form {
+                padding: 20px;
+            }
+            
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <a href="#" class="back-button" onclick="goBack()">← トップに戻る</a>
+        
+        <header class="header">
+            <h1 class="logo">👁 カスラにきいてみた</h1>
+            <p class="subtitle">質問受付システム</p>
+            <p class="description">
+                あなたの質問、ちゃんと届くかどうかは電波次第。<br>
+                カスラはだいたい、それっぽく返してくれます。たまに迷子です。
+            </p>
+        </header>
+
+        <main>
+            <div class="question-form">
+                <h2 class="form-title">🛸 カスラに質問する</h2>
+                <div class="input-container">
+                    <textarea 
+                        class="question-input" 
+                        id="questionInput"
+                        placeholder="「LINEしていいですか？」「転職どう思いますか？」など、お好きに。"
+                        maxlength="100"
+                        oninput="updateCharCounter()"
+                    ></textarea>
+                    <div class="char-counter" id="charCounter">0/100</div>
+                </div>
+                <button class="submit-button" id="submitButton" onclick="submitQuestion()">
+                    📡 カスラに接続する
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="loading-text" id="loadingText">ピピッ……ザザッ……信号受信中……</div>
+                <div class="loading-animation">
+                    <div class="wave-dot"></div>
+                    <div class="wave-dot"></div>
+                    <div class="wave-dot"></div>
+                    <div class="wave-dot"></div>
+                </div>
+                <div class="loading-messages" id="loadingMessages">
+                    カスラが考えています……たぶん……
+                </div>
+            </div>
+
+            <div class="answer-area" id="answerArea">
+                <div class="answer-header">
+                    <div class="casula-icon">🛰</div>
+                    <div class="casula-name">カスラの回答：</div>
+                </div>
+                <div class="answer-content" id="answerContent">
+                    <!-- 回答がここに表示される -->
+                </div>
+                <div class="question-again">
+                    <button class="question-again-button" onclick="askAgain()">
+                        もう一度質問する
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>※カスラの回答は、宇宙の微粒子とランダム要素から生成されています。</p>
+            <p>的中率は期待せず、エンターテイメントとしてお楽しみください。</p>
+        </footer>
+    </div>
+
+    <script>
+        // カスラの回答配列
+        const casulaAnswers = [
+            "ご質問、電波的には受信しました。内容はぼんやり霞んでますが、とりあえず「昼寝は正解」という気がします。",
+            "あなたの問いには確かに深みがありました。でも今の私は、水槽の泡のリズムに集中しているところなので、返事はそれっぽくしておきます。",
+            "ザザッ…ごめんなさい、途中まで読みましたが、最後の単語がフルーツに聞こえました。それが何かの暗示かもしれません。",
+            "答えは「やるなら今」でもあり、「いまじゃない」でもあります。カスラはどちらとも言っていませんが、たぶんどちらかです。",
+            "質問の内容は未確認ですが、電波の乱れから察するに、あなたは今、迷ってますね。そういう時は、スリッパの音で決めましょう。",
+            "その件については、私の上司（存在未確認）に一度確認したいのですが、今は連休らしいです。とりあえず「まあまあ」とだけお伝えします。",
+            "おそらく、質問に「感情」が含まれていました。その気持ちは、電子的にはとても尊いです。で、なんでしたっけ。",
+            "内容は受け取りましたが、言語処理AIを通してる間に何かが変質しました。今の気分でお答えすると、「昆布に相談するのがよさそう」です。",
+            "なるほど。なるほど？　なるほど。カスラは3回なるほどと言いましたので、それが答えです。",
+            "ご質問は\"完全に理解しました\"（※当社比）よって、曖昧な肯定をお返しします。「それもまた、あり」"
+        ];
+
+        // 送信ボタンのテキスト配列
+        const buttonTexts = [
+            "📡 カスラに接続する",
+            "🛸 受信開始",
+            "✉️ 送信（する意味はない）",
+            "🌌 宇宙に投げる",
+            "⚡ 電波を飛ばす",
+            "🎯 カスラを呼び出す",
+            "🔮 運命に委ねる"
+        ];
+
+        // ローディングメッセージ配列
+        const loadingMessages = [
+            "カスラが考えています……たぶん……",
+            "電波の乱れを調整中……",
+            "宇宙語を翻訳しています……",
+            "カス的粒子を分析中……",
+            "意味を生成しています……",
+            "回答を製造中……品質は保証しません……",
+            "カスラが迷子になりました……探してます……",
+            "データを適当に組み立て中……"
+        ];
+
+        // 星を生成
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 文字数カウンター更新
+        function updateCharCounter() {
+            const input = document.getElementById('questionInput');
+            const counter = document.getElementById('charCounter');
+            const length = input.value.length;
+            
+            counter.textContent = `${length}/100`;
+            
+            if (length > 80) {
+                counter.className = 'char-counter danger';
+            } else if (length > 60) {
+                counter.className = 'char-counter warning';
+            } else {
+                counter.className = 'char-counter';
+            }
+
+            // 送信ボタンの状態更新
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = length === 0 || length > 100;
+        }
+
+        // 送信ボタンのテキストをランダムに変更
+        function randomizeButtonText() {
+            const button = document.getElementById('submitButton');
+            const randomText = buttonTexts[Math.floor(Math.random() * buttonTexts.length)];
+            button.classList.add('button-text-change');
+            setTimeout(() => {
+                button.textContent = randomText;
+                button.classList.remove('button-text-change');
+            }, 150);
+        }
+
+        // 質問を送信
+        function submitQuestion() {
+            const input = document.getElementById('questionInput');
+            const question = input.value.trim();
+            
+            if (!question) return;
+
+            // フォームを非表示
+            document.querySelector('.question-form').style.display = 'none';
+            
+            // ローディング表示
+            const loading = document.getElementById('loading');
+            loading.classList.add('active');
+            
+            // ローディングメッセージを動的に変更
+            let messageIndex = 0;
+            const messageInterval = setInterval(() => {
+                const loadingMessagesElement = document.getElementById('loadingMessages');
+                loadingMessagesElement.textContent = loadingMessages[messageIndex % loadingMessages.length];
+                messageIndex++;
+            }, 1500);
+
+            // 2-4秒後に回答を表示
+            setTimeout(() => {
+                clearInterval(messageInterval);
+                showAnswer();
+            }, Math.random() * 2000 + 2000);
+        }
+
+        // 回答を表示
+        function showAnswer() {
+            const loading = document.getElementById('loading');
+            const answerArea = document.getElementById('answerArea');
+            const answerContent = document.getElementById('answerContent');
+            
+            // ランダムな回答を選択
+            const randomAnswer = casulaAnswers[Math.floor(Math.random() * casulaAnswers.length)];
+            
+            // ローディング非表示
+            loading.classList.remove('active');
+            
+            // 回答を表示
+            answerContent.textContent = randomAnswer;
+            answerArea.classList.add('active');
+        }
+
+        // もう一度質問する
+        function askAgain() {
+            const answerArea = document.getElementById('answerArea');
+            const questionForm = document.querySelector('.question-form');
+            const input = document.getElementById('questionInput');
+            
+            // 回答エリアを非表示
+            answerArea.classList.remove('active');
+            
+            // フォームを再表示
+            questionForm.style.display = 'block';
+            
+            // 入力フィールドをクリア
+            input.value = '';
+            updateCharCounter();
+            
+            // ボタンテキストをランダム化
+            randomizeButtonText();
+            
+            // フォーカスを当てる
+            input.focus();
+        }
+
+        // トップページに戻る
+        function goBack() {
+            // 実際の実装では適切なURLに変更
+            alert('トップページに戻ります（実装時はリンクを設定）');
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            randomizeButtonText();
+            
+            // 定期的にボタンテキストを変更
+            setInterval(randomizeButtonText, 10000);
+            
+            // Enterキーで送信
+            document.getElementById('questionInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!this.value.trim() || this.value.length > 100) return;
+                    submitQuestion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
