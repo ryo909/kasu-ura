@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カスうら</title>
+    <title>カスうら - ランダム占い</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -91,6 +91,28 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        /* 戻るボタン */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         /* ヘッダー */
@@ -288,6 +310,100 @@
             box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
         }
 
+        /* SNSシェアセクション */
+        .share-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .share-button {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: shareGlow 2s ease-in-out infinite alternate;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .share-button:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+            animation: shareGlowIntense 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes shareGlow {
+            0% { 
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                background-position: 0% 50%;
+            }
+            100% { 
+                box-shadow: 0 4px 25px rgba(255, 107, 107, 0.5);
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes shareGlowIntense {
+            0% { 
+                box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+            100% { 
+                box-shadow: 0 12px 35px rgba(255, 107, 107, 0.9);
+                text-shadow: 0 0 15px rgba(255, 255, 255, 1);
+            }
+        }
+
+        .share-stats {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            font-family: 'Orbitron', monospace;
+            line-height: 1.5;
+        }
+
+        .share-message {
+            display: none;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Orbitron', monospace;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        .share-message.active {
+            display: block;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(10px); }
+            20%, 80% { opacity: 1; transform: translateY(0); }
+        }
+
         /* ボタン */
         .fortune-button {
             display: block;
@@ -363,9 +479,15 @@
             .fortune-display {
                 padding: 20px;
             }
+            
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
         }
 
-        /* レポートモーダル */
+        /* レポートモーダル（簡略版） */
         .report-modal {
             display: none;
             position: fixed;
@@ -390,372 +512,14 @@
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             color: black;
             width: 794px;
-            min-height: 1123px;
+            min-height: 800px;
             margin: 20px auto;
-            padding: 0;
-            box-shadow: 
-                0 0 50px rgba(0, 0, 0, 0.4),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
             font-family: 'M PLUS Rounded 1c', sans-serif;
             position: relative;
             border-radius: 12px;
             overflow: hidden;
-        }
-
-        .report-container::before {
-            content: 'KASU GALAXY';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 80px;
-            color: rgba(0, 0, 0, 0.03);
-            font-family: 'Orbitron', monospace;
-            font-weight: 900;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .report-header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: white;
-            padding: 50px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .report-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(255, 255, 0, 0.1) 0%, transparent 50%);
-            animation: float 15s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-20px, -20px) rotate(1deg); }
-            66% { transform: translate(20px, -10px) rotate(-1deg); }
-        }
-
-        .report-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 36px;
-            font-weight: 900;
-            margin-bottom: 20px;
-            text-shadow: 
-                0 0 10px rgba(255, 255, 255, 0.5),
-                2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 3px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .report-subtitle {
-            font-size: 18px;
-            color: #bdc3c7;
-            margin-bottom: 25px;
-            font-weight: 300;
-            letter-spacing: 6px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .report-id {
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-family: 'Orbitron', monospace;
-            font-size: 13px;
-            display: inline-block;
-            margin-top: 15px;
-            position: relative;
-            z-index: 2;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .report-content {
-            padding: 50px;
-            background: white;
-            position: relative;
-            z-index: 2;
-        }
-
-        .report-section {
-            margin: 35px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border: none;
-            border-radius: 16px;
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.1),
-                0 0 0 1px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .report-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(90deg, #e74c3c, #f39c12, #f1c40f, #27ae60, #3498db, #9b59b6);
-        }
-
-        .report-section h3 {
-            font-family: 'Orbitron', monospace;
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .report-data {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin: 25px 0;
-        }
-
-        .report-item {
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 5px solid #3498db;
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .report-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
-        }
-
-        .report-label {
-            font-weight: 700;
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .report-label::before {
-            content: '◆';
-            color: #3498db;
-            font-size: 8px;
-        }
-
-        .report-value {
-            font-size: 14px;
-            color: #2c3e50;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        .report-gauge {
-            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
-            height: 30px;
-            border-radius: 20px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 
-                inset 0 3px 6px rgba(0, 0, 0, 0.1),
-                0 1px 0 rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .report-gauge-fill {
-            height: 100%;
-            background: linear-gradient(90deg, 
-                #e74c3c 0%, 
-                #f39c12 20%, 
-                #f1c40f 40%, 
-                #27ae60 60%, 
-                #3498db 80%, 
-                #9b59b6 100%);
-            border-radius: 20px;
-            transition: width 1s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .report-gauge-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.6), 
-                transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .report-gauge-text {
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-            font-size: 12px;
-            font-weight: bold;
-            color: #2c3e50;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        .report-wave-section {
-            background: linear-gradient(135deg, #001122 0%, #002244 100%);
-            color: #00ffff;
-            padding: 30px;
-            border-radius: 16px;
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .report-wave-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 18px;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-            position: relative;
-            z-index: 2;
-        }
-
-        .report-wave-chart {
-            position: relative;
-            height: 250px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            margin: 20px 0;
-            overflow: hidden;
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            z-index: 2;
-        }
-
-        .wave-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .wave-annotation {
-            position: absolute;
-            background: rgba(255, 255, 0, 0.9);
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 11px;
-            font-weight: bold;
-            pointer-events: none;
-        }
-
-        .wave-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #00ffff;
-            margin-top: 10px;
-            font-family: 'Orbitron', monospace;
-        }
-
-        .wave-y-axis {
-            position: absolute;
-            left: -30px;
-            top: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 10px;
-            color: #00ffff;
-            font-family: 'Orbitron', monospace;
-        }
-
-        .report-warning {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            border: 2px solid #f39c12;
-            padding: 25px;
-            margin: 30px 0;
-            border-radius: 12px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2);
-        }
-
-        .report-warning::before {
-            content: '⚠️';
-            font-size: 24px;
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #f39c12;
-            padding: 5px 10px;
-            border-radius: 50%;
-        }
-
-        .report-stamp {
-            position: absolute;
-            bottom: 50px;
-            right: 50px;
-            width: 120px;
-            height: 120px;
-            border: 4px solid #e74c3c;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: rotate(-15deg);
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            color: #e74c3c;
-            font-size: 10px;
-            text-align: center;
-            line-height: 1.2;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
         }
 
         .close-report {
@@ -774,48 +538,15 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-            transition: all 0.3s ease;
         }
 
-        .close-report:hover {
-            background: #c0392b;
-            transform: scale(1.1);
-        }
-
-        .report-qr {
-            position: absolute;
-            bottom: 40px;
-            left: 40px;
-            width: 80px;
-            height: 80px;
-            background: #2c3e50;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 10px;
-            text-align: center;
+        .report-title {
             font-family: 'Orbitron', monospace;
-        }
-
-        @media print {
-            .report-modal {
-                display: block !important;
-                position: static;
-                background: white;
-            }
-            
-            .close-report {
-                display: none;
-            }
-            
-            .report-container {
-                box-shadow: none;
-                margin: 0;
-                padding: 20px;
-            }
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #2c3e50;
         }
     </style>
 </head>
@@ -823,9 +554,11 @@
     <div class="stars" id="stars"></div>
     
     <div class="container">
+        <a href="#" class="back-button" onclick="goBack()">← トップに戻る</a>
+        
         <header class="header">
             <h1 class="logo glitch" data-text="カスうら">カスうら</h1>
-            <p class="subtitle">カス銀河通信所</p>
+            <p class="subtitle">カス銀河通信所 - ランダム占い</p>
             <div class="connection-status">
                 <strong>⚠️ 通信精度: 2% ⚠️</strong><br>
                 宇宙の果て「カス銀河」と接続中...
@@ -844,6 +577,12 @@
             <button class="fortune-button" onclick="getFortune()">
                 運勢通信を受信する
             </button>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="back-button" onclick="goBack()" style="position: static; display: inline-block; margin: 0;">
+                    🏠 トップに戻る
+                </button>
+            </div>
 
             <div class="loading" id="loading">
                 <p>宇宙の彼方から通信受信中<span class="loading-dots"></span></p>
@@ -902,36 +641,6 @@
                 luckySpot: "誰も押さない非常ボタンの横",
                 luckyFood: "開封直後に消えたチョコ",
                 message: "あなたの精神が今日、3.4%ほど透明になっています。午後2時34分に大きなくしゃみをすると、前世の知り合いに気づかれる可能性があります。金運は忘れたころに戻ってきます。"
-            },
-            {
-                luckyItem: "バグった目覚まし時計",
-                luckySpot: "昼間だけ開く無人の自販機前",
-                luckyFood: "コンビニの新作だと思って買った既視感あるもの",
-                message: "今日のあなたには、見えない友達（仮名：リュウタ）がついてきます。彼はアドバイスしてくれますが、基本は無視して大丈夫です。"
-            },
-            {
-                luckyItem: "破れかけの封筒",
-                luckySpot: "自動ドアが開かないコンビニ",
-                luckyFood: "チーズの幻影",
-                message: "今日は「意味のない行動」が最も意味ある日に分類されました。深夜2:19に意味なく立ち上がることで、バタフライエフェクトが発動します（効果は半年後）。"
-            },
-            {
-                luckyItem: "折れたシャーペン",
-                luckySpot: "信号のない交差点の中央",
-                luckyFood: "冷凍庫で忘れられた何か",
-                message: "あなたの今日の言動は、誰かの過去の記憶とそっくりです。偶然か、運命か、たぶんどちらでもないです。"
-            },
-            {
-                luckyItem: "ピンが1本だけ残った洗濯バサミ",
-                luckySpot: "古本屋のレジ横",
-                luckyFood: "昨日のあなたが食べたものの逆",
-                message: "宇宙のノイズがあなたにだけ届いています。午後3時に突然「ハッ」となったら、それが合図です。恋愛運は謎のままです。"
-            },
-            {
-                luckyItem: "よく見たら濡れてたタオル",
-                luckySpot: "カーテンの裏",
-                luckyFood: "焼きそばパン（持ってないのに感じる）",
-                message: "今日は、すべてが「ちょっとだけ違う」日。お気づきの通り、世界が微妙にズレているので、何も信じすぎないことが正解です。"
             }
         ];
 
@@ -941,123 +650,30 @@
             "👂 ラッキー足音発見者",
             "🥉 運命スルー大賞（銅）",
             "🌀 時空の迷子バッジ",
-            "🔍 意味探しマスター",
-            "🎭 現実逃避エキスパート",
-            "⚡ 電波受信体質認定",
-            "🎪 カオス耐性バッジ",
-            "🌙 深夜の哲学者",
-            "🎲 運任せチャンピオン",
-            "🔮 予言無視の達人",
-            "🎯 的外れ名人",
-            "🌊 波動感知能力者",
-            "🎈 ふわふわ思考バッジ",
-            "⭐ 星屑コレクター",
-            "🎭 意味不明演技賞",
-            "🌀 混乱製造機バッジ",
-            "🎪 日常脱出アーティスト",
-            "🔄 ループ思考マスター",
-            "🎨 抽象化の天才"
+            "🔍 意味探しマスター"
         ];
 
         // カスラのランダムメッセージ配列
         const casulaMessages = [
-            // 通信バグ系
             "ピ…ピピ…ッ……？（受信成功率：低）",
             "ザッ…ガ…バグ……データを、ねつ造中です。",
             "受信…失敗しましたが、無理やり続行します。",
-            
-            // 予言演出系
             "未来の断片をスキャン中…意味の成分は2%以下です。",
-            "意味のない波動を検出しました。これは予兆かもしれません。",
-            "ランダムな微粒子を分析中…これは運命だと言い張ります。",
-            
-            // カスラの人格系
-            "カスラです。今日も不正確に参ります。",
-            "よくわかりませんが、たぶん運命です。",
-            "こんにちは、電波の塊です。とりあえず何か出しますね。",
-            
-            // 機械トラブル演出
-            "通信回線がメロンソーダでショートしました。占いを続けます。",
-            "情報の一部が消失しました。残りのカスで判断します。",
-            "データが曖昧ですが、感覚で占います。"
+            "カスラです。今日も不正確に参ります。"
         ];
 
         // 偽コメントの配列
         const fakeComments = [
             "これを信じて傘を忘れました",
             "ラッキーフードがすべてコンビニにない",
-            "3.4秒後に左を見たら、ただの壁だった",
-            "信じた瞬間にカラスに襲われました",
-            "ラッキーアイテムを探して3時間さまよった",
             "2%を信じたら98%外れました",
             "カスラの言う通りにしたら遅刻しました",
-            "宇宙の微粒子、見えませんでした",
-            "影に話しかけたら近所の人に心配されました",
-            "リュウタが見えないので一人で会話してます",
-            "バタフライエフェクト、まだ発動してません",
-            "精神が透明になったかよくわからない",
-            "時空のズレ、5分どころじゃなかった",
-            "猫と目が合ったけど普通に逃げられました",
-            "自販機に感謝されてる実感がない",
-            "地球外生命体からの返事、まだ来ません",
-            "前世の知り合い、気づかれませんでした",
-            "存在の確かさ、相変わらず不安です",
-            "洗濯機の靴下、数えるのをやめました",
-            "ちょっとだけ違う日、気づきませんでした"
+            "宇宙の微粒子、見えませんでした"
         ];
 
         // 現在の占い結果を保存する変数
         let currentFortune = null;
         let currentCasulaMessage = null;
-
-        // 波形グラフを生成する関数
-        function generateWaveChart() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 600;
-            canvas.height = 200;
-            const ctx = canvas.getContext('2d');
-            
-            // 背景をクリア
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 波形ラインを描画
-            ctx.strokeStyle = '#00ffff';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            
-            let prevY = Math.random() * 150 + 25;
-            ctx.moveTo(0, prevY);
-            
-            for (let x = 0; x <= canvas.width; x += 10) {
-                // ランダムな変動を加える
-                const variation = (Math.random() - 0.5) * 60;
-                const newY = Math.max(25, Math.min(175, prevY + variation));
-                ctx.lineTo(x, newY);
-                prevY = newY;
-            }
-            
-            ctx.stroke();
-            
-            return canvas.toDataURL();
-        }
-
-        // ランダムな波形注釈を生成
-        function generateWaveAnnotations() {
-            const annotations = [
-                { text: "意味のピーク", left: "25%", top: "20%" },
-                { text: "混乱地帯", left: "60%", top: "70%" },
-                { text: "誤差です", left: "80%", top: "30%" },
-                { text: "ここが山場", left: "40%", top: "50%" },
-                { text: "データ欠損", left: "15%", top: "80%" },
-                { text: "ノイズ発生", left: "75%", top: "15%" }
-            ];
-            
-            // ランダムに2-3個選択
-            const selected = annotations.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 2);
-            return selected.map(ann => 
-                `<div class="wave-annotation" style="left: ${ann.left}; top: ${ann.top};">${ann.text}</div>`
-            ).join('');
-        }
 
         // 運勢を取得する関数
         function getFortune() {
@@ -1072,7 +688,7 @@
             button.textContent = '通信中...';
 
             // 2-4秒後に結果を表示
-            setTimeout(() => {
+            setTimeout(function() {
                 const randomFortune = fortuneMessages[Math.floor(Math.random() * fortuneMessages.length)];
                 const randomCasulaMessage = casulaMessages[Math.floor(Math.random() * casulaMessages.length)];
                 
@@ -1081,45 +697,48 @@
                 currentCasulaMessage = randomCasulaMessage;
                 
                 // ランダムなコメントを2-3個選択
-                const shuffledComments = [...fakeComments].sort(() => 0.5 - Math.random());
+                const shuffledComments = fakeComments.sort(function() {return 0.5 - Math.random();});
                 const selectedComments = shuffledComments.slice(0, Math.floor(Math.random() * 2) + 2);
                 
                 // ランダムなバッジを1個選択
                 const randomBadge = badges[Math.floor(Math.random() * badges.length)];
                 
-                const commentsHtml = selectedComments.map(comment => 
-                    `<div class="comment">${comment}</div>`
-                ).join('');
+                let commentsHtml = '';
+                for (let i = 0; i < selectedComments.length; i++) {
+                    commentsHtml += '<div class="comment">' + selectedComments[i] + '</div>';
+                }
                 
-                fortuneDisplay.innerHTML = `
-                    <div class="ai-message">
-                        <span class="ai-name">Casula:</span> 
-                        ${randomCasulaMessage}
-                    </div>
-                    <div class="lucky-items">
-                        <h3>⭐ 本日のラッキーデータ</h3>
-                        <div class="lucky-item">🔮 ラッキーアイテム：${randomFortune.luckyItem}</div>
-                        <div class="lucky-item">📍 ラッキースポット：${randomFortune.luckySpot}</div>
-                        <div class="lucky-item">🍽️ ラッキーフード：${randomFortune.luckyFood}</div>
-                    </div>
-                    <div class="fortune-content">
-                        ${randomFortune.message}
-                    </div>
-                    <div class="badge-section">
-                        <div class="badge-title">🏆 本日の記念バッジ獲得</div>
-                        <div class="badge-item">${randomBadge}</div>
-                        <div style="margin-top: 10px; color: #888; font-size: 0.9em;">
-                            ※バッジに意味はありません
-                        </div>
-                    </div>
-                    <div class="comments-section">
-                        <div class="comments-title">🗣️ 誰かのカス体験談</div>
-                        ${commentsHtml}
-                    </div>
-                    <button class="report-button" onclick="generateReport()">
-                        📄 公式カス報告書を生成
-                    </button>
-                `;
+                fortuneDisplay.innerHTML = 
+                    '<div class="ai-message">' +
+                        '<span class="ai-name">Casula:</span> ' + randomCasulaMessage +
+                    '</div>' +
+                    '<div class="lucky-items">' +
+                        '<h3>⭐ 本日のラッキーデータ</h3>' +
+                        '<div class="lucky-item">🔮 ラッキーアイテム：' + randomFortune.luckyItem + '</div>' +
+                        '<div class="lucky-item">📍 ラッキースポット：' + randomFortune.luckySpot + '</div>' +
+                        '<div class="lucky-item">🍽️ ラッキーフード：' + randomFortune.luckyFood + '</div>' +
+                    '</div>' +
+                    '<div class="fortune-content">' + randomFortune.message + '</div>' +
+                    '<div class="badge-section">' +
+                        '<div class="badge-title">🏆 本日の記念バッジ獲得</div>' +
+                        '<div class="badge-item">' + randomBadge + '</div>' +
+                        '<div style="margin-top: 10px; color: #888; font-size: 0.9em;">※バッジに意味はありません</div>' +
+                    '</div>' +
+                    '<div class="comments-section">' +
+                        '<div class="comments-title">🗣️ 誰かのカス体験談</div>' +
+                        commentsHtml +
+                    '</div>' +
+                    '<button class="report-button" onclick="generateReport()">📄 公式カス報告書を生成</button>' +
+                    '<div class="share-section">' +
+                        '<div class="share-title">📢 みんなにもこのカス見せる</div>' +
+                        '<button class="share-button" onclick="shareToTwitter()">𝕏 カスを世界に放流</button>' +
+                        '<button class="share-button" onclick="shareToLine()">💬 LINEでカス共有</button>' +
+                        '<div class="share-stats" id="shareStats"></div>' +
+                        '<div class="share-message" id="shareMessage">🛸 宇宙にカスを放流しました</div>' +
+                    '</div>';
+
+                // シェア統計を初期化
+                updateShareStats();
 
                 loading.classList.remove('active');
                 fortuneDisplay.style.display = 'block';
@@ -1128,23 +747,70 @@
             }, Math.random() * 2000 + 2000);
         }
 
-        // レポート生成機能
+        // SNSシェア機能
+        function shareToTwitter() {
+            if (!currentFortune || !currentCasulaMessage) return;
+            
+            const shareText = '【今日のカス受信ログ】\n🛰 カスラの回答：\n「' + currentCasulaMessage + '」\n\n#かすうら #今日のカス #カス銀河通信所';
+            const shareUrl = window.location.href;
+            const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
+            
+            window.open(twitterUrl, '_blank', 'width=600,height=400');
+            showShareMessage();
+        }
+
+        function shareToLine() {
+            const shareText = '【カス銀河通信所】カスラからのメッセージが届きました！';
+            const shareUrl = window.location.href;
+            const lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
+            
+            window.open(lineUrl, '_blank', 'width=600,height=400');
+            showShareMessage();
+        }
+
+        function showShareMessage() {
+            const messageElement = document.getElementById('shareMessage');
+            const messages = [
+                '🛸 宇宙にカスを放流しました',
+                '📡 電波が正常に送信されました',
+                '🌌 カスが銀河の彼方へ旅立ちました',
+                '⚡ 情報が光速で拡散中です',
+                '🎯 ターゲットに命中しました（たぶん）'
+            ];
+            
+            if (messageElement) {
+                messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+                messageElement.classList.add('active');
+                
+                setTimeout(function() {
+                    messageElement.classList.remove('active');
+                }, 3000);
+                
+                // シェア統計を更新
+                updateShareStats();
+            }
+        }
+
+        function updateShareStats() {
+            const statsElement = document.getElementById('shareStats');
+            const stats = [
+                '📡 ' + (Math.floor(Math.random() * 50000) + 10000) + '人がこの電波に感応しました（うち' + (Math.floor(Math.random() * 100) + 10) + '人は靴をなくしました）',
+                '🔁 ' + (Math.floor(Math.random() * 30000) + 5000) + '回シェアされました（ただし9割が事故扱い）',
+                '🌊 ' + (Math.floor(Math.random() * 80000) + 20000) + 'の波動を検出（意味は不明）',
+                '⚡ ' + (Math.floor(Math.random() * 100000) + 50000) + '回の電波受信を確認（誤作動含む）',
+                '🎪 ' + (Math.floor(Math.random() * 25000) + 8000) + '人が混乱の渦に巻き込まれました'
+            ];
+            if (statsElement) {
+                statsElement.textContent = stats[Math.floor(Math.random() * stats.length)];
+            }
+        }
+
+        // レポート生成機能（簡略版）
         function generateReport() {
             if (!currentFortune || !currentCasulaMessage) return;
 
             const reportModal = document.createElement('div');
             reportModal.className = 'report-modal active';
-            
-            // ランダムなパーセンテージとデータを生成
-            const kasuLevel = Math.floor(Math.random() * 100) + 1;
-            const emotionalWave = Math.floor(Math.random() * 100) + 1;
-            const futureDistortion = Math.floor(Math.random() * 100) + 1;
-            const meaningComponent = Math.random() * 5;
-            const errorRate = 99.8 - (Math.random() * 0.3);
-            
-            // 波形グラフのデータとアノテーション生成
-            const waveImageData = generateWaveChart();
-            const waveAnnotations = generateWaveAnnotations();
             
             const currentDate = new Date().toLocaleDateString('ja-JP', {
                 year: 'numeric',
@@ -1152,125 +818,33 @@
                 day: 'numeric'
             });
 
-            const reportId = 'KASU-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 3).toUpperCase();
+            const reportId = 'KASU-' + Date.now().toString(36).toUpperCase();
 
-            reportModal.innerHTML = `
-                <div class="report-container">
-                    <button class="close-report" onclick="closeReport()">&times;</button>
-                    
-                    <div class="report-header">
-                        <div class="report-title">公式カス報告書</div>
-                        <div class="report-subtitle">OFFICIAL KASU ANALYSIS REPORT</div>
-                        <div class="report-id">Report ID: ${reportId}</div>
-                    </div>
-
-                    <div class="report-content">
-                        <div class="report-section">
-                            <h3>🎯 基本カスデータ</h3>
-                            <div class="report-data">
-                                <div class="report-item">
-                                    <div class="report-label">ラッキーアイテム</div>
-                                    <div class="report-value">${currentFortune.luckyItem}</div>
-                                </div>
-                                <div class="report-item">
-                                    <div class="report-label">ラッキースポット</div>
-                                    <div class="report-value">${currentFortune.luckySpot}</div>
-                                </div>
-                                <div class="report-item">
-                                    <div class="report-label">ラッキーフード</div>
-                                    <div class="report-value">${currentFortune.luckyFood}</div>
-                                </div>
-                                <div class="report-item">
-                                    <div class="report-label">カスラの診断</div>
-                                    <div class="report-value">${currentCasulaMessage}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="report-wave-section">
-                            <div class="report-wave-title">📊 運勢振動波形解析</div>
-                            <div class="report-wave-chart" style="position: relative;">
-                                <div class="wave-y-axis">
-                                    <div>100%</div>
-                                    <div>75%</div>
-                                    <div>50%</div>
-                                    <div>25%</div>
-                                    <div>0%</div>
-                                </div>
-                                <div class="wave-grid"></div>
-                                <img src="${waveImageData}" style="width: 100%; height: 100%; object-fit: cover;">
-                                ${waveAnnotations}
-                            </div>
-                            <div class="wave-labels">
-                                <span>6:00</span>
-                                <span>9:00</span>
-                                <span>12:00</span>
-                                <span>15:00</span>
-                                <span>18:00</span>
-                                <span>21:00</span>
-                            </div>
-                            <div style="text-align: center; margin-top: 15px; color: #00ffff; font-size: 12px; font-family: 'Orbitron', monospace;">
-                                Y軸: 意味度（％） / X軸: 時刻 | 精度: 2.0% ± 98.0%
-                            </div>
-                        </div>
-
-                        <div class="report-section">
-                            <h3>📊 詳細カス分析</h3>
-                            <div class="report-label">総合カス度</div>
-                            <div class="report-gauge">
-                                <div class="report-gauge-fill" style="width: ${kasuLevel}%"></div>
-                                <div class="report-gauge-text">${kasuLevel}%</div>
-                            </div>
-                            
-                            <div class="report-label">感情の揺れ</div>
-                            <div class="report-gauge">
-                                <div class="report-gauge-fill" style="width: ${emotionalWave}%"></div>
-                                <div class="report-gauge-text">${emotionalWave}%</div>
-                            </div>
-                            
-                            <div class="report-label">未来の歪み</div>
-                            <div class="report-gauge">
-                                <div class="report-gauge-fill" style="width: ${futureDistortion}%"></div>
-                                <div class="report-gauge-text">${futureDistortion}%</div>
-                            </div>
-                            
-                            <div class="report-label">意味の成分量</div>
-                            <div class="report-gauge">
-                                <div class="report-gauge-fill" style="width: ${meaningComponent * 20}%"></div>
-                                <div class="report-gauge-text">${meaningComponent.toFixed(1)}%</div>
-                            </div>
-                        </div>
-
-                        <div class="report-section">
-                            <h3>📋 総合カス診断</h3>
-                            <div class="report-value" style="line-height: 1.8; font-size: 15px;">
-                                ${currentFortune.message}
-                            </div>
-                        </div>
-
-                        <div class="report-warning">
-                            <strong style="font-size: 16px; color: #d35400;">免責事項</strong><br><br>
-                            この予測は${errorRate.toFixed(1)}%の確率で誤っています。<br>
-                            カス銀河通信所は結果に対して一切の責任を負いません。<br>
-                            <small style="margin-top: 10px; display: block; color: #7f8c8d;">
-                                発行日: ${currentDate} | カス銀河通信所認定
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="report-qr">
-                        KASU<br>
-                        GALAXY<br>
-                        ${new Date().getFullYear()}
-                    </div>
-
-                    <div class="report-stamp">
-                        OFFICIAL<br>
-                        KASU<br>
-                        CERTIFIED
-                    </div>
-                </div>
-            `;
+            reportModal.innerHTML = 
+                '<div class="report-container">' +
+                    '<button class="close-report" onclick="closeReport()">&times;</button>' +
+                    '<div class="report-title">公式カス報告書</div>' +
+                    '<div style="text-align: center; margin: 20px 0; font-family: Orbitron, monospace;">Report ID: ' + reportId + '</div>' +
+                    '<div style="margin: 30px 0;">' +
+                        '<h3>📊 本日のカスデータ</h3>' +
+                        '<p><strong>ラッキーアイテム:</strong> ' + currentFortune.luckyItem + '</p>' +
+                        '<p><strong>ラッキースポット:</strong> ' + currentFortune.luckySpot + '</p>' +
+                        '<p><strong>ラッキーフード:</strong> ' + currentFortune.luckyFood + '</p>' +
+                        '<p><strong>カスラの診断:</strong> ' + currentCasulaMessage + '</p>' +
+                    '</div>' +
+                    '<div style="margin: 30px 0;">' +
+                        '<h3>📋 総合カス診断</h3>' +
+                        '<p style="line-height: 1.8;">' + currentFortune.message + '</p>' +
+                    '</div>' +
+                    '<div style="background: #fff3cd; padding: 20px; border-radius: 10px; text-align: center; margin: 30px 0;">' +
+                        '<strong>免責事項</strong><br><br>' +
+                        'この予測は98%の確率で誤っています。<br>' +
+                        'カス銀河通信所は結果に対して一切の責任を負いません。<br>' +
+                        '<small style="margin-top: 10px; display: block; color: #666;">' +
+                            '発行日: ' + currentDate + ' | カス銀河通信所認定' +
+                        '</small>' +
+                    '</div>' +
+                '</div>';
 
             document.body.appendChild(reportModal);
         }
@@ -1280,6 +854,11 @@
             if (modal) {
                 modal.remove();
             }
+        }
+
+        // トップページに戻る
+        function goBack() {
+            window.location.href = 'index.html';
         }
 
         // 初期化
