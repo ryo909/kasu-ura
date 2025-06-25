@@ -564,13 +564,6 @@
         </header>
 
         <main>
-            <div class="fortune-display" id="fortuneDisplay">
-                <div class="ai-message">
-                    <span class="ai-name">Casula:</span> 
-                    運勢通信ボタンを押すと、カス銀河からの微粒子データを受信します。精度は2%ですが、その2%にすべてを賭けます。
-                </div>
-            </div>
-
             <button class="fortune-button" onclick="getFortune()">
                 運勢通信を受信する
             </button>
@@ -583,6 +576,10 @@
 
             <div class="loading" id="loading">
                 <p>宇宙の彼方から通信受信中<span class="loading-dots"></span></p>
+            </div>
+
+            <div class="fortune-display" id="fortuneDisplay" style="display: none;">
+                <!-- 占い結果がここに表示される -->
             </div>
         </main>
 
@@ -757,11 +754,19 @@
         }
 
         function shareToLine() {
-            const shareText = '【カス銀河通信所】カスラからのメッセージが届きました！';
+            const shareText = 'カス銀河通信所でカスラからメッセージが届きました！';
             const shareUrl = window.location.href;
-            const lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
             
-            window.open(lineUrl, '_blank', 'width=600,height=400');
+            // モバイルデバイスの場合はLINEアプリを直接開く
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + shareUrl);
+                window.location.href = lineUrl;
+            } else {
+                // PCの場合はQRコード付きのシェア画面
+                const lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
+                window.open(lineUrl, '_blank', 'width=600,height=400');
+            }
+            
             showShareMessage();
         }
 
