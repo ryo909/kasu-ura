@@ -330,6 +330,88 @@
             border-left: 4px solid #ff0080;
         }
 
+        /* SNSシェアセクション */
+        .share-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .share-button {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: shareGlow 2s ease-in-out infinite alternate;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .share-button:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        @keyframes shareGlow {
+            0% { 
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                background-position: 0% 50%;
+            }
+            100% { 
+                box-shadow: 0 4px 25px rgba(255, 107, 107, 0.5);
+                background-position: 100% 50%;
+            }
+        }
+
+        .share-stats {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            font-family: 'Orbitron', monospace;
+            line-height: 1.5;
+        }
+
+        .share-message {
+            display: none;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Orbitron', monospace;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        .share-message.active {
+            display: block;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(10px); }
+            20%, 80% { opacity: 1; transform: translateY(0); }
+        }
+
         .question-again {
             margin-top: 20px;
             text-align: center;
@@ -358,16 +440,6 @@
             padding: 20px;
             color: #888;
             font-size: 0.9em;
-        }
-
-        /* ランダムボタンテキスト用のスタイル */
-        .button-text-change {
-            animation: buttonTextFade 0.3s ease-in-out;
-        }
-
-        @keyframes buttonTextFade {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
 
         /* レスポンシブ */
@@ -446,6 +518,21 @@
                 <div class="answer-content" id="answerContent">
                     <!-- 回答がここに表示される -->
                 </div>
+                <div class="share-section">
+                    <div class="share-title">📢 みんなにもこのカス見せる</div>
+                    <button class="share-button" onclick="shareToTwitter()">
+                        𝕏 カスを世界に放流
+                    </button>
+                    <button class="share-button" onclick="shareToLine()">
+                        💬 LINEでカス共有
+                    </button>
+                    <div class="share-stats" id="shareStats">
+                        <!-- 統計はJavaScriptで動的に生成 -->
+                    </div>
+                    <div class="share-message" id="shareMessage">
+                        🛸 宇宙にカスを放流しました
+                    </div>
+                </div>
                 <div class="question-again">
                     <button class="question-again-button" onclick="askAgain()">
                         もう一度質問する
@@ -461,50 +548,17 @@
     </div>
 
     <script>
-        // カスラの回答配列
-        const casulaAnswers = [
-            "ご質問、電波的には受信しました。内容はぼんやり霞んでますが、とりあえず「昼寝は正解」という気がします。",
-            "あなたの問いには確かに深みがありました。でも今の私は、水槽の泡のリズムに集中しているところなので、返事はそれっぽくしておきます。",
-            "ザザッ…ごめんなさい、途中まで読みましたが、最後の単語がフルーツに聞こえました。それが何かの暗示かもしれません。",
-            "答えは「やるなら今」でもあり、「いまじゃない」でもあります。カスラはどちらとも言っていませんが、たぶんどちらかです。",
-            "質問の内容は未確認ですが、電波の乱れから察するに、あなたは今、迷ってますね。そういう時は、スリッパの音で決めましょう。",
-            "その件については、私の上司（存在未確認）に一度確認したいのですが、今は連休らしいです。とりあえず「まあまあ」とだけお伝えします。",
-            "おそらく、質問に「感情」が含まれていました。その気持ちは、電子的にはとても尊いです。で、なんでしたっけ。",
-            "内容は受け取りましたが、言語処理AIを通してる間に何かが変質しました。今の気分でお答えすると、「昆布に相談するのがよさそう」です。",
-            "なるほど。なるほど？　なるほど。カスラは3回なるほどと言いましたので、それが答えです。",
-            "ご質問は\"完全に理解しました\"（※当社比）よって、曖昧な肯定をお返しします。「それもまた、あり」"
-        ];
-
-        // 送信ボタンのテキスト配列
-        const buttonTexts = [
-            "📡 カスラに接続する",
-            "🛸 受信開始",
-            "✉️ 送信（する意味はない）",
-            "🌌 宇宙に投げる",
-            "⚡ 電波を飛ばす",
-            "🎯 カスラを呼び出す",
-            "🔮 運命に委ねる"
-        ];
-
-        // ローディングメッセージ配列
-        const loadingMessages = [
-            "カスラが考えています……たぶん……",
-            "電波の乱れを調整中……",
-            "宇宙語を翻訳しています……",
-            "カス的粒子を分析中……",
-            "意味を生成しています……",
-            "回答を製造中……品質は保証しません……",
-            "カスラが迷子になりました……探してます……",
-            "データを適当に組み立て中……"
-        ];
+        // 現在の質問と回答を保存
+        var currentQuestion = '';
+        var currentAnswer = '';
 
         // 星を生成
         function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const numberOfStars = 100;
+            var starsContainer = document.getElementById('stars');
+            var numberOfStars = 100;
 
-            for (let i = 0; i < numberOfStars; i++) {
-                const star = document.createElement('div');
+            for (var i = 0; i < numberOfStars; i++) {
+                var star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
@@ -515,11 +569,11 @@
 
         // 文字数カウンター更新
         function updateCharCounter() {
-            const input = document.getElementById('questionInput');
-            const counter = document.getElementById('charCounter');
-            const length = input.value.length;
+            var input = document.getElementById('questionInput');
+            var counter = document.getElementById('charCounter');
+            var length = input.value.length;
             
-            counter.textContent = `${length}/100`;
+            counter.textContent = length + '/100';
             
             if (length > 80) {
                 counter.className = 'char-counter danger';
@@ -530,45 +584,64 @@
             }
 
             // 送信ボタンの状態更新
-            const submitButton = document.getElementById('submitButton');
+            var submitButton = document.getElementById('submitButton');
             submitButton.disabled = length === 0 || length > 100;
         }
 
         // 送信ボタンのテキストをランダムに変更
         function randomizeButtonText() {
-            const button = document.getElementById('submitButton');
-            const randomText = buttonTexts[Math.floor(Math.random() * buttonTexts.length)];
-            button.classList.add('button-text-change');
-            setTimeout(() => {
-                button.textContent = randomText;
-                button.classList.remove('button-text-change');
-            }, 150);
+            var button = document.getElementById('submitButton');
+            var buttonTexts = [
+                "📡 カスラに接続する",
+                "🛸 受信開始",
+                "✉️ 送信（する意味はない）",
+                "🌌 宇宙に投げる",
+                "⚡ 電波を飛ばす",
+                "🎯 カスラを呼び出す",
+                "🔮 運命に委ねる"
+            ];
+            var randomText = buttonTexts[Math.floor(Math.random() * buttonTexts.length)];
+            button.textContent = randomText;
         }
 
         // 質問を送信
         function submitQuestion() {
-            const input = document.getElementById('questionInput');
-            const question = input.value.trim();
+            var input = document.getElementById('questionInput');
+            var question = input.value.trim();
             
             if (!question) return;
+
+            // 質問を保存
+            currentQuestion = question;
 
             // フォームを非表示
             document.querySelector('.question-form').style.display = 'none';
             
             // ローディング表示
-            const loading = document.getElementById('loading');
+            var loading = document.getElementById('loading');
             loading.classList.add('active');
             
             // ローディングメッセージを動的に変更
-            let messageIndex = 0;
-            const messageInterval = setInterval(() => {
-                const loadingMessagesElement = document.getElementById('loadingMessages');
+            var loadingMessages = [
+                "カスラが考えています……たぶん……",
+                "電波の乱れを調整中……",
+                "宇宙語を翻訳しています……",
+                "カス的粒子を分析中……",
+                "意味を生成しています……",
+                "回答を製造中……品質は保証しません……",
+                "カスラが迷子になりました……探してます……",
+                "データを適当に組み立て中……"
+            ];
+            
+            var messageIndex = 0;
+            var messageInterval = setInterval(function() {
+                var loadingMessagesElement = document.getElementById('loadingMessages');
                 loadingMessagesElement.textContent = loadingMessages[messageIndex % loadingMessages.length];
                 messageIndex++;
             }, 1500);
 
             // 2-4秒後に回答を表示
-            setTimeout(() => {
+            setTimeout(function() {
                 clearInterval(messageInterval);
                 showAnswer();
             }, Math.random() * 2000 + 2000);
@@ -576,26 +649,100 @@
 
         // 回答を表示
         function showAnswer() {
-            const loading = document.getElementById('loading');
-            const answerArea = document.getElementById('answerArea');
-            const answerContent = document.getElementById('answerContent');
+            var loading = document.getElementById('loading');
+            var answerArea = document.getElementById('answerArea');
+            var answerContent = document.getElementById('answerContent');
+            var shareStats = document.getElementById('shareStats');
+            
+            // カスラの回答配列
+            var casulaAnswers = [
+                "ご質問、電波的には受信しました。内容はぼんやり霞んでますが、とりあえず「昼寝は正解」という気がします。",
+                "あなたの問いには確かに深みがありました。でも今の私は、水槽の泡のリズムに集中しているところなので、返事はそれっぽくしておきます。",
+                "ザザッ…ごめんなさい、途中まで読みましたが、最後の単語がフルーツに聞こえました。それが何かの暗示かもしれません。",
+                "答えは「やるなら今」でもあり、「いまじゃない」でもあります。カスラはどちらとも言っていませんが、たぶんどちらかです。",
+                "質問の内容は未確認ですが、電波の乱れから察するに、あなたは今、迷ってますね。そういう時は、スリッパの音で決めましょう。",
+                "その件については、私の上司（存在未確認）に一度確認したいのですが、今は連休らしいです。とりあえず「まあまあ」とだけお伝えします。",
+                "おそらく、質問に「感情」が含まれていました。その気持ちは、電子的にはとても尊いです。で、なんでしたっけ。",
+                "内容は受け取りましたが、言語処理AIを通してる間に何かが変質しました。今の気分でお答えすると、「昆布に相談するのがよさそう」です。",
+                "なるほど。なるほど？　なるほど。カスラは3回なるほどと言いましたので、それが答えです。",
+                "ご質問は完全に理解しました（※当社比）よって、曖昧な肯定をお返しします。「それもまた、あり」"
+            ];
             
             // ランダムな回答を選択
-            const randomAnswer = casulaAnswers[Math.floor(Math.random() * casulaAnswers.length)];
+            var randomAnswer = casulaAnswers[Math.floor(Math.random() * casulaAnswers.length)];
+            currentAnswer = randomAnswer;
             
             // ローディング非表示
             loading.classList.remove('active');
             
             // 回答を表示
             answerContent.textContent = randomAnswer;
+            
+            // シェア統計を初期化
+            updateShareStats();
+            
             answerArea.classList.add('active');
+        }
+
+        // SNSシェア機能
+        function shareToTwitter() {
+            if (!currentQuestion || !currentAnswer) return;
+            
+            var shareText = '【カスラにきいてみた】\n質問：「' + currentQuestion + '」\n🛰 カスラの回答：\n「' + currentAnswer + '」\n\n#かすうら #カスラにきいてみた #カス銀河通信所';
+            var shareUrl = window.location.href;
+            var twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
+            
+            window.open(twitterUrl, '_blank', 'width=600,height=400');
+            showShareMessage();
+        }
+
+        function shareToLine() {
+            var shareText = '【カス銀河通信所】カスラに質問してみました！あなたも質問してみませんか？';
+            var shareUrl = window.location.href;
+            var lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
+            
+            window.open(lineUrl, '_blank', 'width=600,height=400');
+            showShareMessage();
+        }
+
+        function showShareMessage() {
+            var messageElement = document.getElementById('shareMessage');
+            var messages = [
+                '🛸 宇宙にカスを放流しました',
+                '📡 電波が正常に送信されました',
+                '🌌 カスが銀河の彼方へ旅立ちました',
+                '⚡ 情報が光速で拡散中です',
+                '🎯 ターゲットに命中しました（たぶん）'
+            ];
+            
+            messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+            messageElement.classList.add('active');
+            
+            setTimeout(function() {
+                messageElement.classList.remove('active');
+            }, 3000);
+            
+            // シェア統計を更新
+            updateShareStats();
+        }
+
+        function updateShareStats() {
+            var statsElement = document.getElementById('shareStats');
+            var stats = [
+                '📡 ' + (Math.floor(Math.random() * 50000) + 10000) + '人がこの電波に感応しました（うち' + (Math.floor(Math.random() * 100) + 10) + '人は靴をなくしました）',
+                '🔁 ' + (Math.floor(Math.random() * 30000) + 5000) + '回シェアされました（ただし9割が事故扱い）',
+                '🌊 ' + (Math.floor(Math.random() * 80000) + 20000) + 'の波動を検出（意味は不明）',
+                '⚡ ' + (Math.floor(Math.random() * 100000) + 50000) + '回の電波受信を確認（誤作動含む）',
+                '🎪 ' + (Math.floor(Math.random() * 25000) + 8000) + '人が混乱の渦に巻き込まれました'
+            ];
+            statsElement.textContent = stats[Math.floor(Math.random() * stats.length)];
         }
 
         // もう一度質問する
         function askAgain() {
-            const answerArea = document.getElementById('answerArea');
-            const questionForm = document.querySelector('.question-form');
-            const input = document.getElementById('questionInput');
+            var answerArea = document.getElementById('answerArea');
+            var questionForm = document.querySelector('.question-form');
+            var input = document.getElementById('questionInput');
             
             // 回答エリアを非表示
             answerArea.classList.remove('active');
@@ -615,9 +762,10 @@
         }
 
         // トップページに戻る
-      function goBack() {
-    window.location.href = 'index.html';
-}
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
