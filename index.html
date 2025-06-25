@@ -364,13 +364,16 @@
         }
 
         // ページ遷移関数（実際の実装では適切なURLに変更）
-       function goToRandomFortune() {
-    window.location.href = 'random.html';
-}
+        function goToRandomFortune() {
+            // ランダム占いページへ遷移
+            alert('ランダム占いページに移動します（実装時はリンクを設定）');
+        }
 
-       function goToQuestionFortune() {
-    window.location.href = 'question.html';
-}
+        function goToQuestionFortune() {
+            // 質問占いページへ遷移
+            alert('質問占いページに移動します（実装時はリンクを設定）');
+        }
+
         // 初期化
         document.addEventListener('DOMContentLoaded', function() {
             createStars();
