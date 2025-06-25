@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カスうら - トップページ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3a 50%, #0d1b2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 星屑アニメーション */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* グリッチエフェクト */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2s infinite;
+            color: #ff0080;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 2s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 14%, 15%, 49%, 50%, 99%, 100% { transform: translate(0); }
+            15%, 49% { transform: translate(-2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 20%, 21%, 62%, 63%, 99%, 100% { transform: translate(0); }
+            21%, 62% { transform: translate(2px, 2px); }
+        }
+
+        /* メインコンテナ */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ヘッダー */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0080;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #ff0080; }
+            50% { text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080; }
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            color: #00ffff;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .description {
+            font-size: 1.1em;
+            color: #cccccc;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .connection-status {
+            background: rgba(255, 0, 128, 0.1);
+            border: 1px solid #ff0080;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-family: 'Orbitron', monospace;
+            animation: blink 1.5s infinite;
+            text-align: center;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+
+        /* 選択ボタン */
+        .choice-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 50px 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .choice-card {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .choice-card:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .choice-card.random {
+            border-color: #ff0080;
+            background: rgba(255, 0, 128, 0.05);
+        }
+
+        .choice-card.random:hover {
+            background: rgba(255, 0, 128, 0.1);
+            box-shadow: 0 10px 30px rgba(255, 0, 128, 0.3);
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .choice-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .choice-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #00ffff;
+        }
+
+        .choice-card.random .choice-title {
+            color: #ff0080;
+        }
+
+        .choice-description {
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #cccccc;
+        }
+
+        .choice-accuracy {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 0, 0.2);
+            color: #ffff00;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+        }
+
+        /* フッター */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px 20px;
+            color: #888;
+            font-size: 0.9em;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5em;
+            }
+            
+            .choice-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .choice-card {
+                padding: 30px 20px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+
+        /* 新しい機能のバッジ */
+        .new-badge {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.7em;
+            font-weight: bold;
+            animation: newBadgePulse 2s infinite;
+            transform: rotate(-15deg);
+        }
+
+        @keyframes newBadgePulse {
+            0%, 100% { transform: rotate(-15deg) scale(1); }
+            50% { transform: rotate(-15deg) scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="logo glitch" data-text="カスうら">カスうら</h1>
+            <p class="subtitle">カス銀河通信所</p>
+            <p class="description">
+                宇宙の果て「カス銀河」から、精度2%の運勢情報をお届け。<br>
+                科学的根拠は一切ありませんが、なんとなくそれっぽいです。
+            </p>
+            <div class="connection-status">
+                <strong>⚠️ 通信精度: 2% ⚠️</strong><br>
+                カス銀河との接続を確認しました
+            </div>
+        </header>
+
+        <main>
+            <div class="choice-container">
+                <a href="#" class="choice-card random" onclick="goToRandomFortune()">
+                    <div class="choice-accuracy">精度: 2%</div>
+                    <div class="choice-icon">🎲</div>
+                    <div class="choice-title">ランダム占い</div>
+                    <div class="choice-description">
+                        カスラが勝手に運勢を読み取ります。<br>
+                        意味のない波動から、それっぽい結果を生成。<br>
+                        ラッキーアイテムとバッジ付き！
+                    </div>
+                </a>
+
+                <a href="#" class="choice-card" onclick="goToQuestionFortune()">
+                    <div class="new-badge">NEW!</div>
+                    <div class="choice-accuracy">精度: ?%</div>
+                    <div class="choice-icon">💬</div>
+                    <div class="choice-title">質問占い</div>
+                    <div class="choice-description">
+                        あなたの質問をカスラに送信。<br>
+                        電波の状態次第で、それっぽい回答が<br>
+                        返ってくる...かもしれません。
+                    </div>
+                </a>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>※すべての占い結果は、観測困難なカス的粒子の挙動から導き出された"なんかそれっぽい結果"です。</p>
+            <p>科学的・霊的・感覚的な根拠は一切ございません。ご安心ください。</p>
+            <p style="margin-top: 15px; color: #555;">
+                カス銀河通信所 © 2025 | 宇宙のどこか
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 星を生成
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 150;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // ページ遷移関数（実際の実装では適切なURLに変更）
+        function goToRandomFortune() {
+            // ランダム占いページへ遷移
+            alert('ランダム占いページに移動します（実装時はリンクを設定）');
+        }
+
+        function goToQuestionFortune() {
+            // 質問占いページへ遷移
+            alert('質問占いページに移動します（実装時はリンクを設定）');
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+        });
+    </script>
+</body>
+</html>
