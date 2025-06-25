@@ -313,7 +313,7 @@
 
         <main>
             <div class="choice-container">
-                <a href="#" class="choice-card random" onclick="goToRandomFortune()">
+                <a href="random.html" class="choice-card random">
                     <div class="choice-accuracy">精度: 2%</div>
                     <div class="choice-icon">🎲</div>
                     <div class="choice-title">ランダム占い</div>
@@ -324,7 +324,7 @@
                     </div>
                 </a>
 
-                <a href="#" class="choice-card" onclick="goToQuestionFortune()">
+                <a href="question.html" class="choice-card">
                     <div class="new-badge">NEW!</div>
                     <div class="choice-accuracy">精度: ?%</div>
                     <div class="choice-icon">💬</div>
@@ -363,15 +363,13 @@
             }
         }
 
-        // ページ遷移関数（実際の実装では適切なURLに変更）
+        // ページ遷移関数
         function goToRandomFortune() {
-            // ランダム占いページへ遷移
-            alert('ランダム占いページに移動します（実装時はリンクを設定）');
+            window.location.href = 'random.html';
         }
 
         function goToQuestionFortune() {
-            // 質問占いページへ遷移
-            alert('質問占いページに移動します（実装時はリンクを設定）');
+            window.location.href = 'question.html';
         }
 
         // 初期化
