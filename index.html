@@ -271,6 +271,16 @@
             .container {
                 padding: 15px;
             }
+            
+            .pc-only {
+                display: none;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .pc-only {
+                display: inline;
+            }
         }
 
         /* 新しい機能のバッジ */
@@ -328,7 +338,7 @@
                     <div class="choice-title">ランダム占い</div>
                     <div class="choice-description">
                         カスラが勝手に運勢を読み取ります。<br>
-                        意味のない波動から、それっぽい結果を生成。<br>
+                        意味のない波動から、それっぽい<br class="pc-only">結果を生成。<br>
                         ラッキーアイテムとバッジ付き！
                     </div>
                 </a>
