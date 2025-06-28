@@ -152,10 +152,10 @@
         /* 選択ボタン */
         .choice-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
             margin: 50px 0;
-            max-width: 700px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -224,6 +224,20 @@
             color: #ff0080;
         }
 
+        .choice-card.compatibility {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .choice-card.compatibility:hover {
+            background: rgba(255, 107, 107, 0.1);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .choice-card.compatibility .choice-title {
+            color: #ff6b6b;
+        }
+
         .choice-description {
             font-size: 0.95em;
             line-height: 1.5;
@@ -274,6 +288,19 @@
             
             .pc-only {
                 display: none;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .choice-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            
+            .choice-card:nth-child(3) {
+                grid-column: 1 / -1;
+                max-width: 400px;
+                margin: 0 auto;
             }
         }
 
@@ -352,6 +379,18 @@
                         あなたの質問をカスラに送信。<br>
                         電波の状態次第で、それっぽい回答が<br>
                         返ってくる...かもしれません。
+                    </div>
+                </a>
+
+                <a href="compatibility.html" class="choice-card compatibility">
+                    <div class="new-badge">NEW!</div>
+                    <div class="choice-accuracy">信憑性: 微妙</div>
+                    <div class="choice-icon">🔍</div>
+                    <div class="choice-title">相性占い</div>
+                    <div class="choice-description">
+                        あなたと絶対に会いたくない人を<br>
+                        カスラが全力で特定します。<br>
+                        MBTI・血液型・星座で完全分析！
                     </div>
                 </a>
             </div>
