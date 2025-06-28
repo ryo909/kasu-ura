@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 あなたと、なるべく会いたくない人診断</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3a 50%, #0d1b2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2em;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #ff6b6b; }
+            50% { text-shadow: 0 0 30px #ff6b6b, 0 0 40px #ff6b6b; }
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #ffa500;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .description {
+            font-size: 0.95em;
+            color: #cccccc;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-form {
+            background: rgba(255, 107, 107, 0.05);
+            border: 2px solid #ff6b6b;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .form-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3em;
+            color: #ff6b6b;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: bold;
+            color: #ffa500;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .input-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1em;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .input-select option {
+            background: #1a1a3a;
+            color: #ffffff;
+        }
+
+        .diagnose-button {
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto 0;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .diagnose-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .diagnose-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            font-family: 'Orbitron', monospace;
+            color: #ff6b6b;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .loading-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .wave-dot {
+            width: 12px;
+            height: 12px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        .wave-dot:nth-child(2) { animation-delay: 0.2s; }
+        .wave-dot:nth-child(3) { animation-delay: 0.4s; }
+        .wave-dot:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes wave {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .result-area {
+            display: none;
+            margin: 30px 0;
+        }
+
+        .result-area.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #666;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-section.user-info {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .result-section.worst-match {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .result-section.codename {
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.05);
+        }
+
+        .result-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-title.user { color: #00ffff; }
+        .result-title.worst { color: #ff6b6b; }
+        .result-title.code { color: #ffa500; }
+
+        .type-display {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .codename-main {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ffa500;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+        }
+
+        .codename-alias {
+            font-size: 1.1em;
+            color: #ffdd44;
+            text-align: center;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .codename-description {
+            font-size: 1em;
+            color: #cccccc;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .countermeasure {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .countermeasure-title {
+            color: #00ff00;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .testimony {
+            background: rgba(255, 255, 0, 0.1);
+            border-left: 4px solid #ffff00;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        .testimony-title {
+            color: #ffff00;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .share-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .share-button {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: shareGlow 2s ease-in-out infinite alternate;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .share-button:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        @keyframes shareGlow {
+            0% { 
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                background-position: 0% 50%;
+            }
+            100% { 
+                box-shadow: 0 4px 25px rgba(255, 107, 107, 0.5);
+                background-position: 100% 50%;
+            }
+        }
+
+        .restart-button {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 1.8em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .input-form {
+                padding: 20px;
+            }
+            
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <a href="index.html" class="back-button">← トップに戻る</a>
+        
+        <header class="header">
+            <h1 class="logo">🔍 ZURE MATCH（ズレマッチ）</h1>
+            <p class="subtitle">すれ違うというより、たぶん違う次元の人。宇宙のズレを確認してみましょう。</p>
+            <p class="description">
+                MBTI・血液型・星座から、あなたにとって"なるべく距離を取りたい人"をカスラが全力で抽出します。<br>
+                信頼できる統計データ（と、カスラの偏見）にもとづいて、相性最悪のタイプと、もし出会ってしまった場合の対処法までご案内します。
+            </p>
+        </header>
+
+        <main>
+            <div class="input-form">
+                <h2 class="form-title">📋 あなたの基本情報</h2>
+                
+                <div class="input-group">
+                    <label class="input-label" for="mbtiSelect">MBTI（16タイプ）</label>
+                    <select class="input-select" id="mbtiSelect">
+                        <option value="">選択してください</option>
+                        <option value="INTJ">INTJ（建築家）</option>
+                        <option value="INTP">INTP（論理学者）</option>
+                        <option value="ENTJ">ENTJ（指揮官）</option>
+                        <option value="ENTP">ENTP（討論者）</option>
+                        <option value="INFJ">INFJ（提唱者）</option>
+                        <option value="INFP">INFP（仲介者）</option>
+                        <option value="ENFJ">ENFJ（主人公）</option>
+                        <option value="ENFP">ENFP（広報運動家）</option>
+                        <option value="ISTJ">ISTJ（管理者）</option>
+                        <option value="ISFJ">ISFJ（擁護者）</option>
+                        <option value="ESTJ">ESTJ（幹部）</option>
+                        <option value="ESFJ">ESFJ（領事官）</option>
+                        <option value="ISTP">ISTP（巨匠）</option>
+                        <option value="ISFP">ISFP（冒険家）</option>
+                        <option value="ESTP">ESTP（起業家）</option>
+                        <option value="ESFP">ESFP（エンターテイナー）</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="bloodSelect">血液型</label>
+                    <select class="input-select" id="bloodSelect">
+                        <option value="">選択してください</option>
+                        <option value="A">A型</option>
+                        <option value="B">B型</option>
+                        <option value="O">O型</option>
+                        <option value="AB">AB型</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="zodiacSelect">星座</label>
+                    <select class="input-select" id="zodiacSelect">
+                        <option value="">選択してください</option>
+                        <option value="牡羊座">牡羊座（3/21-4/19）</option>
+                        <option value="牡牛座">牡牛座（4/20-5/20）</option>
+                        <option value="双子座">双子座（5/21-6/21）</option>
+                        <option value="蟹座">蟹座（6/22-7/22）</option>
+                        <option value="獅子座">獅子座（7/23-8/22）</option>
+                        <option value="乙女座">乙女座（8/23-9/22）</option>
+                        <option value="天秤座">天秤座（9/23-10/23）</option>
+                        <option value="蠍座">蠍座（10/24-11/22）</option>
+                        <option value="射手座">射手座（11/23-12/21）</option>
+                        <option value="山羊座">山羊座（12/22-1/19）</option>
+                        <option value="水瓶座">水瓶座（1/20-2/18）</option>
+                        <option value="魚座">魚座（2/19-3/20）</option>
+                    </select>
+                </div>
+
+                <button class="diagnose-button" id="diagnoseButton" onclick="startDiagnosis()">
+                    🔍 相性最悪を診断する
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="loading-text">カスラが全力で相性最悪を抽出中...</div>
+                <div class="loading-animation">
+                    <div class="wave-dot"></div>
+                    <div class="wave-dot"></div>
+                    <div class="wave-dot"></div>
+                    <div class="wave-dot"></div>
+                </div>
+                <div style="font-size: 0.9em; color: #888; margin-top: 15px;">
+                    統計データと偏見を照合しています...
+                </div>
+            </div>
+
+            <div class="result-area" id="resultArea">
+                <div class="result-section user-info">
+                    <div class="result-title user">👤 あなたの情報</div>
+                    <div class="type-display" id="userType">
+                        <!-- ユーザーのタイプが表示される -->
+                    </div>
+                </div>
+
+                <div class="result-section worst-match">
+                    <div class="result-title worst">⚠️ 相性最悪な相手</div>
+                    <div style="font-weight: bold; color: #ff6b6b; margin-bottom: 10px;">このタイプとはたぶん合いません：</div>
+                    <div class="type-display" id="worstType">
+                        <!-- 相性最悪のタイプが表示される -->
+                    </div>
+                </div>
+
+                <div class="result-section codename">
+                    <div class="result-title code">🧾 コードネーム</div>
+                    <div class="codename-main" id="codeName">
+                        <!-- コードネームが表示される -->
+                    </div>
+                    <div class="codename-alias" id="codeAlias">
+                        <!-- 通称が表示される -->
+                    </div>
+                    <div class="codename-description" id="codeDescription">
+                        <!-- 説明が表示される -->
+                    </div>
+                </div>
+
+                <div class="countermeasure">
+                    <div class="countermeasure-title">💡 出会ってしまった場合の対処法</div>
+                    <div id="countermeasureText">
+                        <!-- 対処法が表示される -->
+                    </div>
+                </div>
+
+                <div class="testimony">
+                    <div class="testimony-title">📢 カス被害談</div>
+                    <div id="testimonyText">
+                        <!-- 被害談が表示される -->
+                    </div>
+                </div>
+
+                <div class="share-section">
+                    <div class="share-title">📢 結果を見せびらかす</div>
+                    <button class="share-button" onclick="shareToTwitter()">
+                        𝕏 最悪な出会いを晒す
+                    </button>
+                    <button class="share-button" onclick="shareToLine()">
+                        💬 LINEで共有
+                    </button>
+                    <div style="margin-top: 20px;">
+                        <button class="restart-button" onclick="restartDiagnosis()">
+                            🔄 もう一度診断する
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>※この診断結果は、カスラの偏見と適当な統計データに基づいています。</p>
+            <p>実際の人間関係に悪影響を与えても、一切責任は負いません。</p>
+        </footer>
+    </div>
+
+    <script>
+        var currentResult = null;
+
+        var mbtiMapping = {
+            "ISTJ": { worstMatch: "ENFP", conflictType: 19 },
+            "ISFJ": { worstMatch: "ENTP", conflictType: 16 },
+            "INFJ": { worstMatch: "ESTP", conflictType: 13 },
+            "INTJ": { worstMatch: "ESFP", conflictType: 8 },
+            "ISTP": { worstMatch: "ESFJ", conflictType: 12 },
+            "ISFP": { worstMatch: "ESTJ", conflictType: 2 },
+            "INFP": { worstMatch: "ESTJ", conflictType: 1 },
+            "INTP": { worstMatch: "ESFJ", conflictType: 11 },
+            "ESTP": { worstMatch: "INFJ", conflictType: 13 },
+            "ESFP": { worstMatch: "INTJ", conflictType: 7 },
+            "ENFP": { worstMatch: "ISTJ", conflictType: 10 },
+            "ENTP": { worstMatch: "ISFJ", conflictType: 6 },
+            "ESTJ": { worstMatch: "INFP", conflictType: 5 },
+            "ESFJ": { worstMatch: "ISTP", conflictType: 4 },
+            "ENFJ": { worstMatch: "ISFP", conflictType: 15 },
+            "ENTJ": { worstMatch: "ISFP", conflictType: 3 }
+        };
+
+        var mbtiPersonality = {
+            "ISTJ": "きっちりしてるのに、なぜか周囲がざわつく。",
+            "ISFJ": "全方位に優しすぎて、いつも心が消耗気味。",
+            "INFJ": "なんとなく全部わかってるけど、言わないで見守る。",
+            "INTJ": "頭の中で10年先の計画を立ててる。話は聞いてる風。",
+            "ISTP": "工具の使い方に哲学を感じてる。話は短いが的確。",
+            "ISFP": "静かに爆発してる。内なる世界が一番賑やか。",
+            "INFP": "理想が詰まった箱を抱えて、どこへでも行きたい。",
+            "INTP": "途中で話が脱線しても、それはそれで意味がある。",
+            "ESTP": "今この瞬間に生きてる。未来の話は明日。",
+            "ESFP": "楽しさのアンテナがピカピカしてる。目立ちたい訳じゃない。",
+            "ENFP": "情熱とアイデアと脱線で構成された自由体。",
+            "ENTP": "議論が趣味。結論にはあまり興味がない。",
+            "ESTJ": "リーダーをしてると落ち着く。指示出しは無意識。",
+            "ESFJ": "みんなを気にしすぎて疲れる。でもやめられない。",
+            "ENFJ": "他人のテンション管理が趣味。自分の分は後回し。",
+            "ENTJ": "目標設定が好きすぎて、ゴールをいくつも作ってしまう。"
+        };
+
+        var conflictTemplates = {
+            1: "このタイプは直感と感情の動きを重視し、論理よりも気分を優先しがちです。構造的に話すほど、なんかイヤで返される可能性が高いです。",
+            2: "衝動型で、思い立ったらすぐ行動という性質が強く、リスクや計画よりもスピード優先。慎重派のあなたには天敵です。",
+            3: "ルールや枠組みを大事にする傾向があり、柔軟性や即興性に不安を感じるタイプです。あなたの自由さは秩序の崩壊に見えるかもしれません。",
+            4: "外向性が高く、常に人との接点を求めるタイプで、静けさを好むあなたには刺激過多。一緒にいるだけで電池が切れます。",
+            5: "感情や気持ちよりも、効率や進行管理を重視するタイプです。わかってほしいと思う瞬間、この人はToDoリストを更新しています。",
+            6: "論理的整合性を最重視し、場の空気や感情を二の次にする傾向があります。まあまあで流したい話題でも必ず落とし所を検証します。",
+            7: "落ち着きと静けさを求めるあなたにとって、テンション高めで話し続けるこのタイプは強敵。五感がすべて賑やかに襲われます。",
+            8: "現実に基づいた計画を重視するこのタイプは、夢や希望の話にリアリティを求めがちです。ふわっとした発想がただの幻に見えるかも。",
+            9: "臨機応変さよりも自分ルールを優先し、状況を柔らかく見るのが苦手です。あなたの提案はそれルールにないと言われて終了。",
+            10: "勢いと感覚で動くあなたに対し、このタイプは全工程を踏まないと動けません。アイデアは浮かんでも実行はほぼ無理。",
+            11: "情緒的な変化に共感しづらく、物事をクールに分析する傾向があります。あなたの気持ちは冷静フィルターで水蒸気にされます。",
+            12: "喜怒哀楽をほぼ表に出さないこのタイプに、あなたは常に私、嫌われてる？という錯覚を抱きます。",
+            13: "思考・作業・会話のペースが真逆で、話が噛み合う頃にはどちらかが去っています。",
+            14: "あなたのなんとなくが、この人には論理的根拠が不明としてはじかれます。",
+            15: "決断を共有したいあなたに対し、このタイプは勝手に全部決めた後に報告します。",
+            16: "一つのことを深く掘りたいあなたにとって、3分で話題を変えるこのタイプは情報災害。",
+            17: "場をなごませたいあなたに、この人はでもそれ矛盾してない？と斬りかかってきます。",
+            18: "昔を懐かしみたいあなたに、この人は常に今が大事しか言いません。",
+            19: "細部にこだわりたいあなたにとって、だいたいでよくない？が口癖のこの人は荒野そのもの。",
+            20: "感情の流れで決めるあなたに、この人はデータと分析で立ちはだかります。"
+        };
+
+        var mbtiNicknames = {
+            "ISTJ": "きっちり長官",
+            "ISFJ": "おせっかい守護神",
+            "INFJ": "静かな予言者",
+            "INTJ": "戦略フルスロットル",
+            "ISTP": "黙って組み立てる人",
+            "ISFP": "たまに消える詩人",
+            "INFP": "夢を見てる間に季節が変わる人",
+            "INTP": "なぜが口癖の空論派",
+            "ESTP": "とりあえず飛び込む人",
+            "ESFP": "ハッピー爆弾",
+            "ENFP": "予定表が空っぽの希望",
+            "ENTP": "話すたびに話題が変わる人",
+            "ESTJ": "決めたがり隊長",
+            "ESFJ": "スケジュールで人を愛す人",
+            "ENFJ": "全員主役が口癖の人",
+            "ENTJ": "押し切り力こそ正義"
+        };
+
+        var testimonies = [
+            "このタイプと同じ職場で3週間、目も合わなかった",
+            "エレベーターで二人きりになった時の気まずさが宇宙規模",
+            "同じ趣味だと思ったら、全然違う星の話だった",
+            "おつかれさまですだけで1日が終わった",
+            "飲み会で隣の席、お互い無言で料理に集中",
+            "グループワークで見事に作業が重複しない",
+            "天気いいですねそうですねで会話が終了",
+            "このタイプと同じチーム、Slackだけで完結した",
+            "廊下ですれ違う時、お互い携帯を見る",
+            "同じ電車の車両に乗り合わせると、なぜか遅延する"
+        ];
+
+        var countermeasures = [
+            "適度な距離を保ち、必要以上に関わらないのが吉。表面的な挨拶だけで十分です。",
+            "話題は天気と仕事の報告のみに絞る。深い話は避けましょう。",
+            "グループ作業では役割分担を明確にし、個別に作業するのがベスト。",
+            "メールやチャットでの連絡を心がけ、直接的な接触を最小限に。",
+            "このタイプの意見にはそうですねと相づちを打ち、自分の主張は控えめに。",
+            "1対1の時間を作らず、必ず第三者がいる場で会話する。",
+            "価値観の違いを受け入れ、変えようとせず現状維持を目指す。",
+            "共通の趣味や話題を見つけるより、お互いの専門分野を尊重する。",
+            "感情的にならず、事実ベースでの会話を心がける。",
+            "時間を区切って短時間での接触に留める。長時間は危険です。"
+        ];
+
+        function createStars() {
+            var starsContainer = document.getElementById('stars');
+            var numberOfStars = 100;
+            for (var i = 0; i < numberOfStars; i++) {
+                var star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function validateInputs() {
+            var mbti = document.getElementById('mbtiSelect').value;
+            var blood = document.getElementById('bloodSelect').value;
+            var zodiac = document.getElementById('zodiacSelect').value;
+            var button = document.getElementById('diagnoseButton');
+            button.disabled = !mbti || !blood || !zodiac;
+        }
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function startDiagnosis() {
+            var mbti = document.getElementById('mbtiSelect').value;
+            var blood = document.getElementById('bloodSelect').value;
+            var zodiac = document.getElementById('zodiacSelect').value;
+            if (!mbti || !blood || !zodiac) return;
+            
+            document.querySelector('.input-form').style.display = 'none';
+            var loading = document.getElementById('loading');
+            loading.classList.add('active');
+            
+            setTimeout(function() {
+                showResult(mbti, blood, zodiac);
+            }, Math.random() * 1000 + 2000);
+        }
+
+        function showResult(userMbti, userBlood, userZodiac) {
+            var loading = document.getElementById('loading');
+            var resultArea = document.getElementById('resultArea');
+            var mapping = mbtiMapping[userMbti];
+            var worstMbti = mapping.worstMatch;
+            var conflictType = mapping.conflictType;
+            
+            var bloodTypes = ['A', 'B', 'O', 'AB'];
+            var zodiacs = ['牡羊座', '牡牛座', '双子座', '蟹座', '獅子座', '乙女座', '天秤座', '蠍座', '射手座', '山羊座', '水瓶座', '魚座'];
+            var worstBlood = getRandomElement(bloodTypes);
+            var worstZodiac = getRandomElement(zodiacs);
+            
+            var userNickname = mbtiNicknames[userMbti];
+            var worstNickname = mbtiNicknames[worstMbti];
+            var codeName = userNickname + ' vs ' + worstNickname;
+            var codeAlias = '絶対に組ませてはいけない ' + userMbti + '×' + worstMbti + ' ペア';
+            var conflictDescription = conflictTemplates[conflictType];
+            var countermeasure = getRandomElement(countermeasures);
+            var testimony = getRandomElement(testimonies);
+            
+            currentResult = {
+                user: { mbti: userMbti, blood: userBlood, zodiac: userZodiac },
+                worst: { mbti: worstMbti, blood: worstBlood, zodiac: worstZodiac },
+                codeName: codeName,
+                codeAlias: codeAlias
+            };
+            
+            document.getElementById('userType').innerHTML = userMbti + ' × ' + userBlood + '型 × ' + userZodiac + '<br><small style="color: #888; margin-top: 10px; display: block;">' + mbtiPersonality[userMbti] + '</small>';
+            document.getElementById('worstType').innerHTML = worstMbti + ' × ' + worstBlood + '型 × ' + worstZodiac + '<br><small style="color: #888; margin-top: 10px; display: block;">' + mbtiPersonality[worstMbti] + '</small>';
+            document.getElementById('codeName').textContent = codeName;
+            document.getElementById('codeAlias').textContent = codeAlias;
+            document.getElementById('codeDescription').textContent = conflictDescription;
+            document.getElementById('countermeasureText').textContent = countermeasure;
+            document.getElementById('testimonyText').textContent = testimony;
+            
+            loading.classList.remove('active');
+            resultArea.classList.add('active');
+        }
+
+        function shareToTwitter() {
+            if (!currentResult) return;
+            var shareText = 'ZURE MATCH診断結果：私の相性最悪タイプは' + currentResult.codeAlias + 'でした！この診断、妙に当たってる気がする... #ZUREMATCH #相性診断';
+            var shareUrl = window.location.href;
+            var twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
+            window.open(twitterUrl, '_blank', 'width=600,height=400');
+        }
+
+        function shareToLine() {
+            if (!currentResult) return;
+            var shareText = 'ZURE MATCHで相性診断してみました！私の相性最悪タイプは' + currentResult.codeAlias + 'でした😅あなたも試してみて！';
+            var shareUrl = window.location.href;
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                var lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + shareUrl);
+                window.location.href = lineUrl;
+            } else {
+                var lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
+                window.open(lineUrl, '_blank', 'width=600,height=400');
+            }
+        }
+
+        function restartDiagnosis() {
+            var resultArea = document.getElementById('resultArea');
+            var inputForm = document.querySelector('.input-form');
+            resultArea.classList.remove('active');
+            inputForm.style.display = 'block';
+            document.getElementById('mbtiSelect').value = '';
+            document.getElementById('bloodSelect').value = '';
+            document.getElementById('zodiacSelect').value = '';
+            validateInputs();
+            currentResult = null;
+            window.scrollTo(0, 0);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            document.getElementById('mbtiSelect').addEventListener('change', validateInputs);
+            document.getElementById('bloodSelect').addEventListener('change', validateInputs);
+            document.getElementById('zodiacSelect').addEventListener('change', validateInputs);
+            validateInputs();
+        });
+    </script>
+</body>
+</html>
