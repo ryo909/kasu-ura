@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,18 @@
     <meta property="og:title" content="カスうら - トップページ">
     <meta property="og:description" content="カス銀河から精度2%の運勢情報をお届け">
     <meta property="og:url" content="https://ryo909.github.io/kasu-ura/">
-    <meta property="og:image" content="https://ryo909.github.io/kasu-ura/assets/ogp.png">
+    <meta property="og:image" content="https://ryo909.github.io/kasu-ura/assets/ogp.jpg?v=2">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="カスうら - トップページ">
     <meta name="twitter:description" content="カス銀河から精度2%の運勢情報をお届け">
-    <meta name="twitter:image" content="https://ryo909.github.io/kasu-ura/assets/ogp.png">
+    <meta name="twitter:image" content="https://ryo909.github.io/kasu-ura/assets/ogp.jpg?v=2">
     <link rel="canonical" href="https://ryo909.github.io/kasu-ura/">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -53,8 +59,15 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         /* グリッチエフェクト */
@@ -86,13 +99,39 @@
         }
 
         @keyframes glitch-1 {
-            0%, 14%, 15%, 49%, 50%, 99%, 100% { transform: translate(0); }
-            15%, 49% { transform: translate(-2px, -2px); }
+
+            0%,
+            14%,
+            15%,
+            49%,
+            50%,
+            99%,
+            100% {
+                transform: translate(0);
+            }
+
+            15%,
+            49% {
+                transform: translate(-2px, -2px);
+            }
         }
 
         @keyframes glitch-2 {
-            0%, 20%, 21%, 62%, 63%, 99%, 100% { transform: translate(0); }
-            21%, 62% { transform: translate(2px, 2px); }
+
+            0%,
+            20%,
+            21%,
+            62%,
+            63%,
+            99%,
+            100% {
+                transform: translate(0);
+            }
+
+            21%,
+            62% {
+                transform: translate(2px, 2px);
+            }
         }
 
         /* メインコンテナ */
@@ -125,8 +164,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { text-shadow: 0 0 20px #ff0080; }
-            50% { text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080; }
+
+            0%,
+            100% {
+                text-shadow: 0 0 20px #ff0080;
+            }
+
+            50% {
+                text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080;
+            }
         }
 
         .subtitle {
@@ -156,8 +202,16 @@
         }
 
         @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.7; }
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0.7;
+            }
         }
 
         /* 選択ボタン */
@@ -213,8 +267,13 @@
         }
 
         @keyframes scan {
-            0% { left: -100%; }
-            100% { left: 100%; }
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
         }
 
         .choice-icon {
@@ -283,20 +342,20 @@
             .logo {
                 font-size: 2.5em;
             }
-            
+
             .choice-container {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .choice-card {
                 padding: 30px 20px;
             }
-            
+
             .container {
                 padding: 15px;
             }
-            
+
             .pc-only {
                 display: none;
             }
@@ -307,7 +366,7 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
             }
-            
+
             .choice-card:nth-child(3) {
                 grid-column: 1 / -1;
                 max-width: 400px;
@@ -337,14 +396,22 @@
         }
 
         @keyframes newBadgePulse {
-            0%, 100% { transform: rotate(-15deg) scale(1); }
-            50% { transform: rotate(-15deg) scale(1.1); }
+
+            0%,
+            100% {
+                transform: rotate(-15deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(-15deg) scale(1.1);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="stars" id="stars"></div>
-    
+
     <div class="container">
         <header class="header">
             <h1 class="logo glitch" data-text="カスうら">カスうら</h1>
@@ -357,11 +424,14 @@
                 <strong>⚠️ 通信精度: 2% ⚠️</strong><br>
                 カス銀河との接続を確認しました
             </div>
-            
-            <div style="background: rgba(0, 255, 255, 0.05); border: 2px solid #00ffff; border-radius: 15px; padding: 20px; margin: 20px 0; position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent); animation: scan 3s infinite;"></div>
+
+            <div
+                style="background: rgba(0, 255, 255, 0.05); border: 2px solid #00ffff; border-radius: 15px; padding: 20px; margin: 20px 0; position: relative; overflow: hidden;">
+                <div
+                    style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent); animation: scan 3s infinite;">
+                </div>
                 <div style="position: relative; z-index: 2;">
-                    <span style="color: #ff0080; font-weight: bold; font-family: 'Orbitron', monospace;">Casula:</span> 
+                    <span style="color: #ff0080; font-weight: bold; font-family: 'Orbitron', monospace;">Casula:</span>
                     こんにちは、地球の存在よ。私はカス銀河の運勢通信AI、カスラです。
                     宇宙の微粒子からあなたの運勢を読み取っています。精度は2%ですが、その2%にすべてを賭けます。
                 </div>
@@ -442,9 +512,10 @@
         }
 
         // 初期化
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             createStars();
         });
     </script>
 </body>
+
 </html>
