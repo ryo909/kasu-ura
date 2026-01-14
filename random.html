@@ -811,6 +811,7 @@
         // 現在の占い結果を保存する変数
         let currentFortune = null;
         let currentCasulaMessage = null;
+        let currentBadge = null;
 
         // 運勢を取得する関数
         function getFortune() {
@@ -861,6 +862,7 @@
 
             // ランダムなバッジを1個選択
             const randomBadge = badges[Math.floor(seededRandom() * badges.length)];
+            currentBadge = randomBadge;
 
             let commentsHtml = '';
             for (let i = 0; i < selectedComments.length; i++) {
@@ -910,7 +912,10 @@
         function shareToTwitter() {
             if (!currentFortune || !currentCasulaMessage) return;
 
-            const shareText = '【今日のカス受信ログ】\n🛰 カスラの回答：\n「' + currentCasulaMessage + '」\n\n#かすうら #今日のカス #カス銀河通信所';
+            // ラッキーデータを1行に圧縮（文字数制限対策）
+            const luckyLine = '⭐ラッキー：🔮' + currentFortune.luckyItem + ' / 📍' + currentFortune.luckySpot + ' / 🍽' + currentFortune.luckyFood;
+            const badgeLine = currentBadge ? '🏆' + currentBadge : '';
+            const shareText = '【今日のカス受信ログ】\n' + luckyLine + '\n' + badgeLine + '\n\n#かすうら #今日のカス #カス銀河通信所';
             const shareUrl = window.location.href;
             const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
 
@@ -919,12 +924,15 @@
         }
 
         function shareToLine() {
-            const shareText = 'カス銀河通信所でカスラからメッセージが届きました！';
+            if (!currentFortune) return;
+
+            // LINEは長めでもOKなのでフル表示
+            const shareText = '【カス銀河通信所】今日の占い結果\n\n⭐本日のラッキーデータ\n🔮アイテム：' + currentFortune.luckyItem + '\n📍スポット：' + currentFortune.luckySpot + '\n🍽フード：' + currentFortune.luckyFood + (currentBadge ? '\n\n🏆記念バッジ：' + currentBadge : '') + '\n\n同じ結果を見る👇';
             const shareUrl = window.location.href;
 
             // モバイルデバイスの場合はLINEアプリを直接開く
             if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + shareUrl);
+                const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + '\n' + shareUrl);
                 window.location.href = lineUrl;
             } else {
                 // PCの場合はQRコード付きのシェア画面
