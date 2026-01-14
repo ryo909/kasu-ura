@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カスうら - ランダム占い</title>
+    <!-- OGP / Twitter Card -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="カスうら - ランダム占い">
+    <meta property="og:description" content="カス銀河から精度2%の運勢情報をお届け">
+    <meta property="og:url" content="https://ryo909.github.io/kasu-ura/random.html">
+    <meta property="og:image" content="https://ryo909.github.io/kasu-ura/assets/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="カスうら - ランダム占い">
+    <meta name="twitter:description" content="カス銀河から精度2%の運勢情報をお届け">
+    <meta name="twitter:image" content="https://ryo909.github.io/kasu-ura/assets/ogp.png">
+    <link rel="canonical" href="https://ryo909.github.io/kasu-ura/random.html">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background: linear-gradient(135deg, #0a0a23 0%, #1a1a3a 50%, #0d1b2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 星屑アニメーション */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* グリッチエフェクト */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2s infinite;
+            color: #ff0080;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 2s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+
+            0%,
+            14%,
+            15%,
+            49%,
+            50%,
+            99%,
+            100% {
+                transform: translate(0);
+            }
+
+            15%,
+            49% {
+                transform: translate(-2px, -2px);
+            }
+        }
+
+        @keyframes glitch-2 {
+
+            0%,
+            20%,
+            21%,
+            62%,
+            63%,
+            99%,
+            100% {
+                transform: translate(0);
+            }
+
+            21%,
+            62% {
+                transform: translate(2px, 2px);
+            }
+        }
+
+        /* メインコンテナ */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 戻るボタン */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ヘッダー */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #ff0080;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 20px #ff0080;
+            }
+
+            50% {
+                text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #00ffff;
+            margin-bottom: 20px;
+        }
+
+        .connection-status {
+            background: rgba(255, 0, 128, 0.1);
+            border: 1px solid #ff0080;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Orbitron', monospace;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0.7;
+            }
+        }
+
+        /* 運勢表示エリア */
+        .fortune-display {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fortune-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .ai-message {
+            margin-bottom: 20px;
+        }
+
+        .ai-name {
+            color: #ff0080;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .fortune-content {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .lucky-items {
+            background: rgba(255, 0, 128, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #ff0080;
+        }
+
+        .lucky-items h3 {
+            color: #00ffff;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .lucky-item {
+            margin: 5px 0;
+            color: #ffffff;
+        }
+
+        /* バッジセクション */
+        .badge-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .badge-title {
+            color: #ffd700;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .badge-item {
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            animation: badgeGlow 2s infinite alternate;
+        }
+
+        @keyframes badgeGlow {
+            0% {
+                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        /* コメント欄風スタイル */
+        .comments-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-title {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .comment {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #666;
+            font-size: 0.9em;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .comment::before {
+            content: "👤 ";
+            color: #888;
+        }
+
+        /* レポート生成ボタン */
+        .report-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #4a90e2, #7b68ee);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .report-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
+        }
+
+        /* SNSシェアセクション */
+        .share-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .share-button {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 8px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: shareGlow 2s ease-in-out infinite alternate;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .share-button:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+            animation: shareGlowIntense 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes shareGlow {
+            0% {
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                background-position: 0% 50%;
+            }
+
+            100% {
+                box-shadow: 0 4px 25px rgba(255, 107, 107, 0.5);
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes shareGlowIntense {
+            0% {
+                box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 12px 35px rgba(255, 107, 107, 0.9);
+                text-shadow: 0 0 15px rgba(255, 255, 255, 1);
+            }
+        }
+
+        .share-stats {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #888;
+            font-family: 'Orbitron', monospace;
+            line-height: 1.5;
+        }
+
+        .share-message {
+            display: none;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-family: 'Orbitron', monospace;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        .share-message.active {
+            display: block;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            20%,
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ボタン */
+        .fortune-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff0080, #00ffff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .fortune-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+        }
+
+        .fortune-button:active {
+            transform: scale(0.95);
+        }
+
+        /* フッター */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        /* ローディングアニメーション */
+        .loading {
+            display: none;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            color: #00ffff;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: loading-dots 1.5s infinite;
+        }
+
+        @keyframes loading-dots {
+            0% {
+                content: '';
+            }
+
+            25% {
+                content: '.';
+            }
+
+            50% {
+                content: '..';
+            }
+
+            75% {
+                content: '...';
+            }
+
+            100% {
+                content: '';
+            }
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .fortune-display {
+                padding: 20px;
+            }
+
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+        }
+
+        /* レポートモーダル（簡略版） */
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .report-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .report-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: black;
+            width: 794px;
+            min-height: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .close-report {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .report-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <a href="#" class="back-button" onclick="goBack()">← トップに戻る</a>
+
+        <header class="header">
+            <h1 class="logo glitch" data-text="🎲カスラの気まぐれ占い">🎲カスラの気まぐれ占い</h1>
+            <div class="connection-status">
+                <strong>カス銀河から、今日っぽい電波が届きました。意味があるかどうかは、あなたの気分しだい。カスラはたまに見てるけど、ほとんど見てません。</strong>
+            </div>
+        </header>
+
+        <main>
+            <button class="fortune-button" onclick="getFortune()">
+                運勢通信を受信する
+            </button>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="back-button" onclick="goBack()"
+                    style="position: static; display: inline-block; margin: 0;">
+                    🏠 トップに戻る
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <p>宇宙の彼方から通信受信中<span class="loading-dots"></span></p>
+            </div>
+
+            <div class="fortune-display" id="fortuneDisplay" style="display: none;">
+                <!-- 占い結果がここに表示される -->
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>※この占いは、観測困難なカス的粒子の挙動から導き出された"なんかそれっぽい結果"です。科学的・霊的・感覚的な根拠は一切ございません。ご安心ください。</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==== Seeded Random (mulberry32) ====
+        function mulberry32(seed) {
+            return function () {
+                var t = seed += 0x6D2B79F5;
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+        function hashString(str) {
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
+        // Get or generate seed
+        var urlParams = new URLSearchParams(window.location.search);
+        var currentSeed = urlParams.get('seed') || Math.random().toString(36).substr(2, 8);
+        var seededRandom = mulberry32(hashString(currentSeed));
+
+        // Copy URL to clipboard
+        function copyResultUrl() {
+            navigator.clipboard.writeText(window.location.href).then(function () {
+                var btn = document.getElementById('copyUrlBtn');
+                if (btn) {
+                    btn.textContent = '✅ コピーしました！';
+                    setTimeout(function () { btn.textContent = '📋 結果URLをコピー'; }, 2000);
+                }
+            });
+        }
+
+        // 星を生成
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 運勢メッセージの配列
+        const fortuneMessages = [
+            {
+                luckyItem: "曲がったスプーン",
+                luckySpot: "Wi-Fiが切れかけたカフェ",
+                luckyFood: "一昨日の夢に出てきたドーナツ（架空）",
+                message: "今日のあなたは、時空のズレに巻き込まれ、午前中の会話すべてが5分遅れで心に届きます。恋愛運は、目が合った人がもし猫ならそれは運命。金運は、自販機に100円を飲まれたあと宇宙から感謝されます。"
+            },
+            {
+                luckyItem: "乾きかけの雑巾",
+                luckySpot: "エレベーターの「閉」ボタンの前",
+                luckyFood: "ぬるいピクルスジュース",
+                message: "今日は、あなたの発する音声が一部宇宙へ送信されています。午前11時11分に「おいしい」と言えば、地球外生命体に好かれる可能性あり。金運は使っても減らない気がしますが、それは錯覚です。"
+            },
+            {
+                luckyItem: "封の空いたおしぼり",
+                luckySpot: "人がいないロータリー",
+                luckyFood: "忘れ去られたみたらし団子",
+                message: "あなたの今日の使命は、「思い出せないことを思い出そうとする」ことです。恋愛運は、洗濯機の中の靴下の数と連動。気を抜くとラッキーアイテムが逃げます。"
+            },
+            {
+                luckyItem: "意味深なメモ（白紙）",
+                luckySpot: "公園のベンチの端っこ",
+                luckyFood: "昼を過ぎても冷めない唐揚げ",
+                message: "未来が今日だけあやふやになっています。存在の確かさを確認するには、自分の影に話しかけてください。成功率は2%。たまに返事があります。"
+            },
+            {
+                luckyItem: "使われなかったイヤホン",
+                luckySpot: "誰も押さない非常ボタンの横",
+                luckyFood: "開封直後に消えたチョコ",
+                message: "あなたの精神が今日、3.4%ほど透明になっています。午後2時34分に大きなくしゃみをすると、前世の知り合いに気づかれる可能性があります。金運は忘れたころに戻ってきます。"
+            }
+        ];
+
+        // バッジの配列
+        const badges = [
+            "🍃 見えざる昆布バッジ",
+            "👂 ラッキー足音発見者",
+            "🥉 運命スルー大賞（銅）",
+            "🌀 時空の迷子バッジ",
+            "🔍 意味探しマスター"
+        ];
+
+        // カスラのランダムメッセージ配列
+        const casulaMessages = [
+            "ピ…ピピ…ッ……？（受信成功率：低）",
+            "ザッ…ガ…バグ……データを、ねつ造中です。",
+            "受信…失敗しましたが、無理やり続行します。",
+            "未来の断片をスキャン中…意味の成分は2%以下です。",
+            "カスラです。今日も不正確に参ります。"
+        ];
+
+        // 偽コメントの配列
+        const fakeComments = [
+            "これを信じて傘を忘れました",
+            "ラッキーフードがすべてコンビニにない",
+            "2%を信じたら98%外れました",
+            "カスラの言う通りにしたら遅刻しました",
+            "宇宙の微粒子、見えませんでした",
+            "「3秒後に左見ろ」って書いてあって見たら、誰もいなかったけど風が吹いた。",
+            "「冷蔵庫がカギ」って言われた日に、プリンが勝手に落ちた。",
+            "朝の占い通り、意味のないことに感動して泣きそうになった。",
+            "靴ひもを結び直したら、急に腹が鳴った。前世の声かもしれない。",
+            "ラッキーアイテムが\"ぬるいメロンソーダ\"だった日に限って、自販機が温かった。",
+            "占いを信じて逆方向に歩いたら、迷ったけど猫に出会えた。",
+            "「謎の既視感に注意」って書いてあったけど、既視感に気を取られて転んだ。",
+            "信号待ちで「人生っぽい匂いがした」っていう一文、ガチだった。",
+            "「見なかったことにされる可能性大」って言われて、本当に無視された。",
+            "書いてあった通り、意味のないことに意味を感じかけて、やっぱやめた。"
+        ];
+
+        // 現在の占い結果を保存する変数
+        let currentFortune = null;
+        let currentCasulaMessage = null;
+
+        // 運勢を取得する関数
+        function getFortune() {
+            const fortuneDisplay = document.getElementById('fortuneDisplay');
+            const loading = document.getElementById('loading');
+            const button = document.querySelector('.fortune-button');
+
+            // 新しいseedを生成してURLを更新
+            currentSeed = Math.random().toString(36).substr(2, 8);
+            seededRandom = mulberry32(hashString(currentSeed));
+            var newUrl = window.location.pathname + '?seed=' + currentSeed;
+            history.replaceState(null, '', newUrl);
+
+            // ローディング表示
+            fortuneDisplay.style.display = 'none';
+            loading.classList.add('active');
+            button.disabled = true;
+            button.textContent = '通信中...';
+
+            // 2-4秒後に結果を表示
+            setTimeout(function () {
+                showFortuneResult();
+            }, seededRandom() * 2000 + 2000);
+        }
+
+        // 結果を表示する関数（seed再現用に分離）
+        function showFortuneResult() {
+            const fortuneDisplay = document.getElementById('fortuneDisplay');
+            const loading = document.getElementById('loading');
+            const button = document.querySelector('.fortune-button');
+
+            const randomFortune = fortuneMessages[Math.floor(seededRandom() * fortuneMessages.length)];
+            const randomCasulaMessage = casulaMessages[Math.floor(seededRandom() * casulaMessages.length)];
+
+            // 現在の結果を保存
+            currentFortune = randomFortune;
+            currentCasulaMessage = randomCasulaMessage;
+
+            // ランダムなコメントを2-3個選択（seeded shuffleを使用）
+            const commentsCopy = fakeComments.slice();
+            for (var i = commentsCopy.length - 1; i > 0; i--) {
+                var j = Math.floor(seededRandom() * (i + 1));
+                var temp = commentsCopy[i];
+                commentsCopy[i] = commentsCopy[j];
+                commentsCopy[j] = temp;
+            }
+            const selectedComments = commentsCopy.slice(0, Math.floor(seededRandom() * 2) + 2);
+
+            // ランダムなバッジを1個選択
+            const randomBadge = badges[Math.floor(seededRandom() * badges.length)];
+
+            let commentsHtml = '';
+            for (let i = 0; i < selectedComments.length; i++) {
+                commentsHtml += '<div class="comment">' + selectedComments[i] + '</div>';
+            }
+
+            fortuneDisplay.innerHTML =
+                '<div class="ai-message">' +
+                '<span class="ai-name">Casula:</span> ' + randomCasulaMessage +
+                '</div>' +
+                '<div class="lucky-items">' +
+                '<h3>⭐ 本日のラッキーデータ</h3>' +
+                '<div class="lucky-item">🔮 ラッキーアイテム：' + randomFortune.luckyItem + '</div>' +
+                '<div class="lucky-item">📍 ラッキースポット：' + randomFortune.luckySpot + '</div>' +
+                '<div class="lucky-item">🍽️ ラッキーフード：' + randomFortune.luckyFood + '</div>' +
+                '</div>' +
+                '<div class="fortune-content">' + randomFortune.message + '</div>' +
+                '<div class="badge-section">' +
+                '<div class="badge-title">🏆 本日の記念バッジ獲得</div>' +
+                '<div class="badge-item">' + randomBadge + '</div>' +
+                '<div style="margin-top: 10px; color: #888; font-size: 0.9em;">※バッジに意味はありません</div>' +
+                '</div>' +
+                '<div class="comments-section">' +
+                '<div class="comments-title">🗣️ 誰かのカス体験談</div>' +
+                commentsHtml +
+                '</div>' +
+                '<button class="report-button" onclick="generateReport()">📄 公式カス報告書を生成</button>' +
+                '<div class="share-section">' +
+                '<div class="share-title">📢 みんなにもこのカス見せる</div>' +
+                '<button class="share-button" onclick="shareToTwitter()">𝕏 カスを世界に放流</button>' +
+                '<button class="share-button" onclick="shareToLine()">💬 LINEでカス共有</button>' +
+                '<button class="share-button" id="copyUrlBtn" onclick="copyResultUrl()">📋 結果URLをコピー</button>' +
+                '<div class="share-stats" id="shareStats"></div>' +
+                '<div class="share-message" id="shareMessage">🛸 宇宙にカスを放流しました</div>' +
+                '</div>';
+
+            // シェア統計を初期化
+            updateShareStats();
+
+            loading.classList.remove('active');
+            fortuneDisplay.style.display = 'block';
+            button.disabled = false;
+            button.textContent = '再度通信する';
+        }
+
+        // SNSシェア機能
+        function shareToTwitter() {
+            if (!currentFortune || !currentCasulaMessage) return;
+
+            const shareText = '【今日のカス受信ログ】\n🛰 カスラの回答：\n「' + currentCasulaMessage + '」\n\n#かすうら #今日のカス #カス銀河通信所';
+            const shareUrl = window.location.href;
+            const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
+
+            window.open(twitterUrl, '_blank', 'width=600,height=400');
+            showShareMessage();
+        }
+
+        function shareToLine() {
+            const shareText = 'カス銀河通信所でカスラからメッセージが届きました！';
+            const shareUrl = window.location.href;
+
+            // モバイルデバイスの場合はLINEアプリを直接開く
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + shareUrl);
+                window.location.href = lineUrl;
+            } else {
+                // PCの場合はQRコード付きのシェア画面
+                const lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
+                window.open(lineUrl, '_blank', 'width=600,height=400');
+            }
+
+            showShareMessage();
+        }
+
+        function showShareMessage() {
+            const messageElement = document.getElementById('shareMessage');
+            const messages = [
+                '🛸 宇宙にカスを放流しました',
+                '📡 電波が正常に送信されました',
+                '🌌 カスが銀河の彼方へ旅立ちました',
+                '⚡ 情報が光速で拡散中です',
+                '🎯 ターゲットに命中しました（たぶん）'
+            ];
+
+            if (messageElement) {
+                messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+                messageElement.classList.add('active');
+
+                setTimeout(function () {
+                    messageElement.classList.remove('active');
+                }, 3000);
+
+                // シェア統計を更新
+                updateShareStats();
+            }
+        }
+
+        function updateShareStats() {
+            const statsElement = document.getElementById('shareStats');
+            const stats = [
+                '📡 ' + (Math.floor(Math.random() * 50000) + 10000) + '人がこの電波に感応しました（うち' + (Math.floor(Math.random() * 100) + 10) + '人は靴をなくしました）',
+                '🔁 ' + (Math.floor(Math.random() * 30000) + 5000) + '回シェアされました（ただし9割が事故扱い）',
+                '🌊 ' + (Math.floor(Math.random() * 80000) + 20000) + 'の波動を検出（意味は不明）',
+                '⚡ ' + (Math.floor(Math.random() * 100000) + 50000) + '回の電波受信を確認（誤作動含む）',
+                '🎪 ' + (Math.floor(Math.random() * 25000) + 8000) + '人が混乱の渦に巻き込まれました'
+            ];
+            if (statsElement) {
+                statsElement.textContent = stats[Math.floor(Math.random() * stats.length)];
+            }
+        }
+
+        // レポート生成機能（簡略版）
+        function generateReport() {
+            if (!currentFortune || !currentCasulaMessage) return;
+
+            const reportModal = document.createElement('div');
+            reportModal.className = 'report-modal active';
+
+            const currentDate = new Date().toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const reportId = 'KASU-' + Date.now().toString(36).toUpperCase();
+
+            reportModal.innerHTML =
+                '<div class="report-container">' +
+                '<button class="close-report" onclick="closeReport()">&times;</button>' +
+                '<div class="report-title">公式カス報告書</div>' +
+                '<div style="text-align: center; margin: 20px 0; font-family: Orbitron, monospace;">Report ID: ' + reportId + '</div>' +
+                '<div style="margin: 30px 0;">' +
+                '<h3>📊 本日のカスデータ</h3>' +
+                '<p><strong>ラッキーアイテム:</strong> ' + currentFortune.luckyItem + '</p>' +
+                '<p><strong>ラッキースポット:</strong> ' + currentFortune.luckySpot + '</p>' +
+                '<p><strong>ラッキーフード:</strong> ' + currentFortune.luckyFood + '</p>' +
+                '<p><strong>カスラの診断:</strong> ' + currentCasulaMessage + '</p>' +
+                '</div>' +
+                '<div style="margin: 30px 0;">' +
+                '<h3>📋 総合カス診断</h3>' +
+                '<p style="line-height: 1.8;">' + currentFortune.message + '</p>' +
+                '</div>' +
+                '<div style="background: #fff3cd; padding: 20px; border-radius: 10px; text-align: center; margin: 30px 0;">' +
+                '<strong>免責事項</strong><br><br>' +
+                'この予測は98%の確率で誤っています。<br>' +
+                'カス銀河通信所は結果に対して一切の責任を負いません。<br>' +
+                '<small style="margin-top: 10px; display: block; color: #666;">' +
+                '発行日: ' + currentDate + ' | カス銀河通信所認定' +
+                '</small>' +
+                '</div>' +
+                '</div>';
+
+            document.body.appendChild(reportModal);
+        }
+
+        function closeReport() {
+            const modal = document.querySelector('.report-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // トップページに戻る
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function () {
+            createStars();
+            // URLにseedがあれば自動で結果を表示
+            if (urlParams.get('seed')) {
+                showFortuneResult();
+            }
+        });
+    </script>
+</body>
+
+</html>
