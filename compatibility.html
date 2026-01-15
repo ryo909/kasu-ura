@@ -537,6 +537,96 @@
                 display: inline-block;
             }
         }
+
+        /* 共有モード選択モーダル */
+        .share-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .share-modal-overlay.active {
+            display: flex;
+        }
+
+        .share-modal {
+            background: linear-gradient(135deg, #1a1a3a 0%, #0d1b2a 100%);
+            border: 2px solid #ff6b6b;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 107, 107, 0.3);
+        }
+
+        .share-modal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2em;
+            color: #ff6b6b;
+            margin-bottom: 25px;
+        }
+
+        .share-modal-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 15px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-modal-btn.full {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+        }
+
+        .share-modal-btn.full:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .share-modal-btn.anon {
+            background: linear-gradient(45deg, #00bcd4, #00ffff);
+            color: #0a0a23;
+        }
+
+        .share-modal-btn.anon:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .share-modal-cancel {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: #888;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-modal-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ccc;
+        }
     </style>
 </head>
 
@@ -675,10 +765,10 @@
 
                 <div class="share-section">
                     <div class="share-title">📢 結果を見せびらかす</div>
-                    <button class="share-button" onclick="shareToTwitter()">
+                    <button class="share-button" onclick="openShareModal('twitter')">
                         𝕏 最悪な出会いを晒す
                     </button>
-                    <button class="share-button" onclick="shareToLine()">
+                    <button class="share-button" onclick="openShareModal('line')">
                         💬 LINEで共有
                     </button>
                     <button class="share-button" id="copyUrlBtn" onclick="copyResultUrl()">
@@ -697,6 +787,16 @@
             <p>※この診断結果は、カスラの偏見と適当な統計データに基づいています。</p>
             <p>実際の人間関係に悪影響を与えても、一切責任は負いません。</p>
         </footer>
+    </div>
+
+    <!-- 共有モード選択モーダル -->
+    <div id="shareModal" class="share-modal-overlay">
+        <div class="share-modal">
+            <div class="share-modal-title">📢 共有方法を選択</div>
+            <button class="share-modal-btn full" onclick="executeShare(false)">フルで共有（私のタイプ含む）</button>
+            <button class="share-modal-btn anon" onclick="executeShare(true)">匿名で共有（私のタイプ非表示）</button>
+            <button class="share-modal-cancel" onclick="closeShareModal()">キャンセル</button>
+        </div>
     </div>
 
     <script>
@@ -734,6 +834,9 @@
         }
 
         var currentResult = null;
+        var currentCountermeasures = [];
+        var pendingSharePlatform = null;
+        var ANON_URL = 'https://ryo909.github.io/kasu-ura/';
 
         var mbtiMapping = {
             "ISTJ": { worstMatch: "ENFP", conflictType: 19 },
@@ -907,11 +1010,24 @@
             var countermeasure = getRandomElement(countermeasures);
             var testimony = getRandomElement(testimonies);
 
+            // 対処法を最大3つ取得して保存
+            currentCountermeasures = [];
+            var usedIndices = [];
+            for (var i = 0; i < 3 && i < countermeasures.length; i++) {
+                var idx;
+                do {
+                    idx = Math.floor(seededRandom() * countermeasures.length);
+                } while (usedIndices.indexOf(idx) !== -1);
+                usedIndices.push(idx);
+                currentCountermeasures.push(countermeasures[idx]);
+            }
+
             currentResult = {
                 user: { mbti: userMbti, blood: userBlood, zodiac: userZodiac },
                 worst: { mbti: worstMbti, blood: worstBlood, zodiac: worstZodiac },
                 codeName: codeName,
-                codeAlias: codeAlias
+                codeAlias: codeAlias,
+                worstPair: userMbti + '×' + worstMbti
             };
 
             document.getElementById('userType').innerHTML = userMbti + ' × ' + userBlood + '型 × ' + userZodiac + '<br><small style="color: #888; margin-top: 10px; display: block;">' + mbtiPersonality[userMbti] + '</small>';
@@ -919,32 +1035,124 @@
             document.getElementById('codeName').textContent = codeName;
             document.getElementById('codeAlias').textContent = codeAlias;
             document.getElementById('codeDescription').textContent = conflictDescription;
-            document.getElementById('countermeasureText').textContent = countermeasure;
+            // 対処法は最初の1つを表示（画面用）
+            document.getElementById('countermeasureText').textContent = currentCountermeasures[0] || countermeasure;
             document.getElementById('testimonyText').textContent = testimony;
 
             loading.classList.remove('active');
             resultArea.classList.add('active');
         }
 
-        function shareToTwitter() {
+        // ==== 共有モーダル関連 ====
+        function openShareModal(platform) {
             if (!currentResult) return;
-            var shareText = 'ZURE MATCH診断結果：私の相性最悪タイプは' + currentResult.codeAlias + 'でした！この診断、妙に当たってる気がする... #ZUREMATCH #相性診断';
-            var shareUrl = window.location.href;
-            var twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
-            window.open(twitterUrl, '_blank', 'width=600,height=400');
+            pendingSharePlatform = platform;
+            document.getElementById('shareModal').classList.add('active');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('active');
+            pendingSharePlatform = null;
+        }
+
+        function generateShareText(isAnonymous, tipsCount) {
+            var tips = currentCountermeasures.slice(0, tipsCount || 3);
+            var tipsText = tips.map(function (t) { return '- ' + t; }).join('\n');
+            var codeName = currentResult.codeName;
+            var worstPair = currentResult.worstPair;
+            var url = isAnonymous ? ANON_URL : window.location.href;
+
+            if (isAnonymous) {
+                return '相性診断の結果、最悪の組み合わせが出ました。\n' +
+                    '相性最悪：' + worstPair + '\n\n' +
+                    '📎コードネーム：' + codeName + '\n\n' +
+                    '🧯対処法\n' + tipsText + '\n\n' +
+                    url + '\n#ZUREMATCH #相性診断';
+            } else {
+                var user = currentResult.user;
+                return '私：' + user.mbti + '/' + user.blood + '型/' + user.zodiac + '\n' +
+                    '相性最悪：' + worstPair + ' でした。\n\n' +
+                    '📎コードネーム：' + codeName + '\n\n' +
+                    '🧯対処法\n' + tipsText + '\n\n' +
+                    url + '\n#ZUREMATCH #相性診断';
+            }
+        }
+
+        function truncateForTwitter(text, isAnonymous) {
+            var MAX_LEN = 280;
+            // URLは23文字としてカウント（t.coの短縮）
+            var urlLen = 23;
+            var textWithoutUrl = text.replace(/https?:\/\/[^\s]+/g, '');
+            var effectiveLen = textWithoutUrl.length + urlLen;
+
+            if (effectiveLen <= MAX_LEN) {
+                return text;
+            }
+
+            // 1段階目: 対処法を1つに減らす
+            var newText = generateShareText(isAnonymous, 1);
+            textWithoutUrl = newText.replace(/https?:\/\/[^\s]+/g, '');
+            effectiveLen = textWithoutUrl.length + urlLen;
+
+            if (effectiveLen <= MAX_LEN) {
+                return newText;
+            }
+
+            // 2段階目: コードネームを短縮
+            var truncatedCodeName = currentResult.codeName.substring(0, 20) + '…';
+            var tips = currentCountermeasures.slice(0, 1);
+            var tipsText = tips.map(function (t) { return '- ' + t; }).join('\n');
+            var worstPair = currentResult.worstPair;
+            var url = isAnonymous ? ANON_URL : window.location.href;
+
+            if (isAnonymous) {
+                newText = '相性診断の結果、最悪の組み合わせが出ました。\n' +
+                    '相性最悪：' + worstPair + '\n\n' +
+                    '📎コードネーム：' + truncatedCodeName + '\n\n' +
+                    '🧯対処法\n' + tipsText + '\n\n' +
+                    url + '\n#ZUREMATCH #相性診断';
+            } else {
+                var user = currentResult.user;
+                newText = '私：' + user.mbti + '/' + user.blood + '型/' + user.zodiac + '\n' +
+                    '相性最悪：' + worstPair + ' でした。\n\n' +
+                    '📎コードネーム：' + truncatedCodeName + '\n\n' +
+                    '🧯対処法\n' + tipsText + '\n\n' +
+                    url + '\n#ZUREMATCH #相性診断';
+            }
+
+            return newText;
+        }
+
+        function executeShare(isAnonymous) {
+            closeShareModal();
+            if (!currentResult || !pendingSharePlatform) return;
+
+            var shareText = generateShareText(isAnonymous);
+
+            if (pendingSharePlatform === 'twitter') {
+                shareText = truncateForTwitter(shareText, isAnonymous);
+                var twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+                window.open(twitterUrl, '_blank', 'width=600,height=400');
+            } else if (pendingSharePlatform === 'line') {
+                if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    var lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText);
+                    window.location.href = lineUrl;
+                } else {
+                    var lineUrl = 'https://social-plugins.line.me/lineit/share?text=' + encodeURIComponent(shareText);
+                    window.open(lineUrl, '_blank', 'width=600,height=400');
+                }
+            }
+
+            pendingSharePlatform = null;
+        }
+
+        // 旧関数は互換性のため残す（直接呼ばれることはない）
+        function shareToTwitter() {
+            openShareModal('twitter');
         }
 
         function shareToLine() {
-            if (!currentResult) return;
-            var shareText = 'ZURE MATCHで相性診断してみました！私の相性最悪タイプは' + currentResult.codeAlias + 'でした😅あなたも試してみて！';
-            var shareUrl = window.location.href;
-            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                var lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText + ' ' + shareUrl);
-                window.location.href = lineUrl;
-            } else {
-                var lineUrl = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(shareText);
-                window.open(lineUrl, '_blank', 'width=600,height=400');
-            }
+            openShareModal('line');
         }
 
         function restartDiagnosis() {
