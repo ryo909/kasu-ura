@@ -650,6 +650,9 @@
             color: #2c3e50;
         }
     </style>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+        data-cf-beacon='{"token": "983de8ec2e924eb29ed426ebb9f79ffc"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 
 <body>
@@ -923,7 +926,7 @@
             const item = truncate(currentFortune.luckyItem, 16);
             const spot = truncate(currentFortune.luckySpot, 16);
             const food = truncate(currentFortune.luckyFood, 16);
-            const shareText = '【今日のカス受信ログ】通信精度2%\n⭐ラッキー3点セット：🔮' + item + '｜📍' + spot + '｜🍫' + food + '\n#かすうら #今日のカス';
+            const shareText = '【今日のカス受信ログ】通信精度2%\n⭐ラッキー3点セット：🔮' + item + '｜📍' + spot + '｜🍫' + food + '\n#カスうら #占い';
             const shareUrl = window.location.href;
             const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
 

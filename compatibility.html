@@ -430,7 +430,23 @@
             padding: 15px;
             margin: 15px 0;
             border-radius: 5px;
-            font-style: italic;
+            font-style: normal;
+        }
+
+        .testimony-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid #666;
+            font-size: 0.9em;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .testimony-item::before {
+            content: "👤 ";
+            color: #888;
         }
 
         .testimony-title {
@@ -628,6 +644,9 @@
             color: #ccc;
         }
     </style>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+        data-cf-beacon='{"token": "983de8ec2e924eb29ed426ebb9f79ffc"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 
 <body>
@@ -1138,7 +1157,7 @@
             var conflictDescription = conflictTemplates[conflictType];
             var countermeasure = getRandomElement(countermeasures);
             var testimonyList = getRandomElementsUniqueStrict(testimonies, 3);
-            var testimonyHtml = "・" + testimonyList.join("<br>・");
+            var testimonyHtml = testimonyList.map(function (t) { return '<div class="testimony-item">' + t + '</div>'; }).join('');
 
             // 対処法を最大3つ取得して保存
             currentCountermeasures = [];
@@ -1196,14 +1215,14 @@
                     '相性最悪：' + worstPair + '\n\n' +
                     '📎コードネーム：' + codeName + '\n\n' +
                     '🧯対処法\n' + tipsText + '\n\n' +
-                    url + '\n#ZUREMATCH #相性診断';
+                    url + '\n#カスうら #占い';
             } else {
                 var user = currentResult.user;
                 return '私：' + user.mbti + '/' + user.blood + '型/' + user.zodiac + '\n' +
                     '相性最悪：' + worstPair + ' でした。\n\n' +
                     '📎コードネーム：' + codeName + '\n\n' +
                     '🧯対処法\n' + tipsText + '\n\n' +
-                    url + '\n#ZUREMATCH #相性診断';
+                    url + '\n#カスうら #占い';
             }
         }
 
@@ -1239,14 +1258,14 @@
                     '相性最悪：' + worstPair + '\n\n' +
                     '📎コードネーム：' + truncatedCodeName + '\n\n' +
                     '🧯対処法\n' + tipsText + '\n\n' +
-                    url + '\n#ZUREMATCH #相性診断';
+                    url + '\n#カスうら #占い';
             } else {
                 var user = currentResult.user;
                 newText = '私：' + user.mbti + '/' + user.blood + '型/' + user.zodiac + '\n' +
                     '相性最悪：' + worstPair + ' でした。\n\n' +
                     '📎コードネーム：' + truncatedCodeName + '\n\n' +
                     '🧯対処法\n' + tipsText + '\n\n' +
-                    url + '\n#ZUREMATCH #相性診断';
+                    url + '\n#カスうら #占い';
             }
 
             return newText;
@@ -1257,19 +1276,21 @@
             if (!currentResult || !pendingSharePlatform) return;
 
             var shareText = generateShareText(isAnonymous);
+            var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
             if (pendingSharePlatform === 'twitter') {
                 shareText = truncateForTwitter(shareText, isAnonymous);
                 var twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
-                window.open(twitterUrl, '_blank', 'width=600,height=400');
-            } else if (pendingSharePlatform === 'line') {
-                if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                    var lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText);
-                    window.location.href = lineUrl;
+                // iOS Safari対応: モバイルではlocation.hrefで確実に遷移
+                if (isMobile) {
+                    location.href = twitterUrl;
                 } else {
-                    var lineUrl = 'https://social-plugins.line.me/lineit/share?text=' + encodeURIComponent(shareText);
-                    window.open(lineUrl, '_blank', 'width=600,height=400');
+                    window.open(twitterUrl, '_blank', 'width=600,height=400');
                 }
+            } else if (pendingSharePlatform === 'line') {
+                var lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(shareText);
+                // LINEは常にlocation.hrefで遷移（モバイル/PC問わず確実）
+                location.href = lineUrl;
             }
 
             pendingSharePlatform = null;

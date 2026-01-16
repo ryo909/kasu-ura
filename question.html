@@ -567,6 +567,9 @@
             }
         }
     </style>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+        data-cf-beacon='{"token": "983de8ec2e924eb29ed426ebb9f79ffc"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 
 <body>
@@ -880,7 +883,7 @@
         function shareToTwitter() {
             if (!currentQuestion || !currentAnswer) return;
 
-            var shareText = '【カスラにきいてみた】\n質問：「' + currentQuestion + '」\n🛰 カスラの回答：\n「' + currentAnswer + '」\n\n#かすうら #カスラにきいてみた #カス銀河通信所';
+            var shareText = '【カスラにきいてみた】\n質問：「' + currentQuestion + '」\n🛰 カスラの回答：\n「' + currentAnswer + '」\n\n#カスうら #占い';
             var shareUrl = window.location.href;
             var twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl);
 
